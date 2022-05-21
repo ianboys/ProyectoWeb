@@ -9,6 +9,15 @@ import { ClienteComponentComponent } from './cliente-component/cliente-component
 import { ProductoComponentComponent } from './producto-component/producto-component.component';
 import { OrdenDetalleComponentComponent } from './orden-detalle-component/orden-detalle-component.component';
 import { OrdenDesgloseComponentComponent } from './orden-desglose-component/orden-desglose-component.component';
+import { RouterModule, Routes } from '@angular/router';
+
+const appRoutes:Routes=[
+  {path:'',component:OrdenComponentComponent},
+  {path:'clientes', component:ClienteComponentComponent},
+  {path:'catalogo', component:ProductoComponentComponent},
+  {path:'detalleOrden', component:OrdenDetalleComponentComponent},
+  {path:'desgloseOrden', component:OrdenDesgloseComponentComponent}
+];
 
 @NgModule({
   declarations: [
@@ -22,7 +31,8 @@ import { OrdenDesgloseComponentComponent } from './orden-desglose-component/orde
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]
