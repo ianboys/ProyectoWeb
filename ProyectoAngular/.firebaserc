@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "proyectoangularfacturacion": {
+      "hosting": {
+        "ProyectoAngular": [
+          "proyectoangularfacturacion"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "proyectoangularfacturacion"
+  }
+}
