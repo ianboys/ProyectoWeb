@@ -1,0 +1,44 @@
+<script src="https://kit.fontawesome.com/f3a4db3942.js" crossorigin="anonymous"></script>
+
+<div class="main">
+    <div class="body" id="izq">
+        <h1>{{titulo | uppercase}}</h1>
+        <form>
+            <div class="form-group">
+                <label for="idLabel">ID Producto</label>
+                <input class="form-control" type="text" name="id" id="id" placeholder="id del producto" [(ngModel)]="cuadroId">
+            </div>
+            <div class="form-group">
+                <label for="nombreLabel">Nombre</label>
+                <input class="form-control" type="text" name="nombre" id="nombre" placeholder="nombre del producto" [(ngModel)]="cuadroNombre">
+            </div>
+            <div class="form-group">
+                <label for="cantidadLabel">Cantidad por Paquete</label>
+                <input class="form-control" type="number" name="cantidad" id="cantidad" placeholder="opcional" [(ngModel)]="cuadroCantidad">
+            </div>
+            <div class="form-group">
+                <label for="precioLabel">Precio</label>
+                <input class="form-control" type="number" name="precio" id="precio" placeholder="Precio del producto" [(ngModel)]="cuadroPrecio">
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Imagen del Producto</label>
+                <input class="form-control" type="file" accept=".png, .jpg" name="imagen" id="imagen" [(ngModel)]="cuadroImagen" (change)="agregarImagenProducto($event)">
+            </div>
+            <input type="text" [value]="urlImagen | async" name="urlImagen" id="urlImagen" [(ngModel)]="cuadroUrl">
+            <button type="submit" class="btn btn-primary" (click)="guardarProducto()">Agregar Producto</button>
+        </form>
+    </div>
+
+    <div class="body" id="der">
+        <h1>Productos</h1>
+        <div id="der2">
+            <div *ngFor="let producto of productos" class="div-producto">
+                <img src="{{producto.imagen}}" alt="{{producto.idProducto}}">
+                <!--{{producto.idProducto}} {{producto.nombre}} {{producto.cantidad}} {{producto.precio}}-->
+                <!--<i class="fas fa-trash"></i>-->
+                <button type="button" class="btn btn-danger" (click)="eliminarProducto(producto.id)">Eliminar</button>
+                <button type="button" class="btn btn-warning" (click)="agregarEditarProducto(producto)">Editar</button>
+            </div>
+        </div>
+    </div>
+</div>
