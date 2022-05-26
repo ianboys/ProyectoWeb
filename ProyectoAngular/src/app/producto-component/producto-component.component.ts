@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { finalize } from 'rxjs/operators';
 import { Producto } from '../modelos/producto.model';
 import { ProductosService } from '../servicios/productos.service';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-producto-component',
@@ -12,13 +15,17 @@ export class ProductoComponentComponent implements OnInit {
   cuadroNombre:string="";
   cuadroCantidad:number=0;
   cuadroPrecio:number=0;
+  urlImagen:Observable<string> | undefined;
+  uploadPercent: Observable<number> | undefined;
+  cuadroUrl:string="";
+  cuadroImagen:string="";
 
   productos:Producto[]=[];
 
   titulo = "Agregar producto nuevo";
   id: string | undefined;
 
-  constructor(private productoService:ProductosService) { }
+  constructor(private productoService:ProductosService, private storage: AngularFireStorage) { }
 
   ngOnInit(): void {
     this.obtenerProductos();
@@ -50,6 +57,7 @@ export class ProductoComponentComponent implements OnInit {
   guardarProducto(){
     if(this.id === undefined){
       //Crear producto nuevo
+      //this.agregarImagenProducto();
       this.agregarProducto();
     } else{
       //actualizar producto existente
@@ -57,16 +65,31 @@ export class ProductoComponentComponent implements OnInit {
     }
   }
 
+  agregarImagenProducto(event: Event){
+    const id = Math.random().toString(36).substring(2);
+    const file = (event.target as HTMLInputElement).files?.item(0);
+    const filePath = `uploads/producto_${id}`;
+    const ref = this.storage.ref(filePath);
+    const task = this.storage.upload(filePath, file);
+
+    //this.uploadPercent = task.percentageChanges()
+    task.snapshotChanges().pipe(finalize(() => this.urlImagen = ref.getDownloadURL())).subscribe();
+
+    console.log(id + " # " + file + " # " + filePath);
+  }
+
   agregarProducto(){
     const nuevoProducto: Producto = {
       idProducto: this.cuadroId,
       nombre: this.cuadroNombre,
       cantidad: this.cuadroCantidad,
-      precio: this.cuadroPrecio
+      precio: this.cuadroPrecio,
+      imagen: (<HTMLInputElement>document.getElementById("urlImagen")).value
     }
 
     this.productoService.agregarProducto(nuevoProducto).then(() => {
       console.log("Producto registrado");
+      console.log((<HTMLInputElement>document.getElementById("urlImagen")).value);
       this.limpiarCampos();
     }, error => {
       console.log(error);
@@ -78,7 +101,8 @@ export class ProductoComponentComponent implements OnInit {
       idProducto: this.cuadroId,
       nombre: this.cuadroNombre,
       cantidad: this.cuadroCantidad,
-      precio: this.cuadroPrecio
+      precio: this.cuadroPrecio,
+      imagen: (<HTMLInputElement>document.getElementById("urlImagen")).value
     }
     this.productoService.editarProducto(id, nuevoProducto).then(() =>{
       this.titulo = "Agregar producto nuevo";
@@ -108,6 +132,8 @@ export class ProductoComponentComponent implements OnInit {
     this.cuadroNombre="";
     this.cuadroCantidad=0;
     this.cuadroPrecio=0;
+    this.cuadroUrl="";
+    this.cuadroImagen="";
   }
 
 }

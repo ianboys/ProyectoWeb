@@ -20,6 +20,11 @@
                 <label for="precioLabel">Precio</label>
                 <input class="form-control" type="number" name="precio" id="precio" placeholder="Precio del producto" [(ngModel)]="cuadroPrecio">
             </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Imagen del Producto</label>
+                <input class="form-control" type="file" accept=".png, .jpg" name="imagen" id="imagen" [(ngModel)]="cuadroImagen" (change)="agregarImagenProducto($event)">
+            </div>
+            <input type="text" [value]="urlImagen | async" name="urlImagen" id="urlImagen" [(ngModel)]="cuadroUrl">
             <button type="submit" class="btn btn-primary" (click)="guardarProducto()">Agregar Producto</button>
         </form>
     </div>
@@ -28,8 +33,8 @@
         <h1>Productos</h1>
         <div id="der2">
             <div *ngFor="let producto of productos" class="div-producto">
-                <!--<img src="/carne.jpg" alt="imagen carne">-->
-                {{producto.idProducto}} {{producto.nombre}} {{producto.cantidad}} {{producto.precio}}
+                <img src="{{producto.imagen}}" alt="{{producto.idProducto}}">
+                <!--{{producto.idProducto}} {{producto.nombre}} {{producto.cantidad}} {{producto.precio}}-->
                 <!--<i class="fas fa-trash"></i>-->
                 <button type="button" class="btn btn-danger" (click)="eliminarProducto(producto.id)">Eliminar</button>
                 <button type="button" class="btn btn-warning" (click)="agregarEditarProducto(producto)">Editar</button>
