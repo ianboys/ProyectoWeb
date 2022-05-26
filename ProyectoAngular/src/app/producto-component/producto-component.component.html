@@ -2,7 +2,7 @@
 
 <div class="main">
     <div class="body" id="izq">
-        <h1>Producto Nuevo</h1>
+        <h1>{{titulo | uppercase}}</h1>
         <form>
             <div class="form-group">
                 <label for="idLabel">ID Producto</label>
@@ -20,7 +20,7 @@
                 <label for="precioLabel">Precio</label>
                 <input class="form-control" type="number" name="precio" id="precio" placeholder="Precio del producto" [(ngModel)]="cuadroPrecio">
             </div>
-            <button type="submit" class="btn btn-primary" (click)="agregarProducto()">Agregar Producto</button>
+            <button type="submit" class="btn btn-primary" (click)="guardarProducto()">Agregar Producto</button>
         </form>
     </div>
 
@@ -29,8 +29,10 @@
         <div id="der2">
             <div *ngFor="let producto of productos" class="div-producto">
                 <!--<img src="/carne.jpg" alt="imagen carne">-->
-                {{producto.id}} {{producto.nombre}} {{producto.cantidad}} {{producto.precio}}
-                <i class="fa-solid fa-trash-can"></i>
+                {{producto.idProducto}} {{producto.nombre}} {{producto.cantidad}} {{producto.precio}}
+                <!--<i class="fas fa-trash"></i>-->
+                <button type="button" class="btn btn-danger" (click)="eliminarProducto(producto.id)">Eliminar</button>
+                <button type="button" class="btn btn-warning" (click)="agregarEditarProducto(producto)">Editar</button>
             </div>
         </div>
     </div>

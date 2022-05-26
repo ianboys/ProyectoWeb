@@ -15,10 +15,23 @@ export class ProductoComponentComponent implements OnInit {
 
   productos:Producto[]=[];
 
+  titulo = "Agregar producto nuevo";
+  id: string | undefined;
+
   constructor(private productoService:ProductosService) { }
 
   ngOnInit(): void {
     this.obtenerProductos();
+
+    this.productoService.getEditarProducto().subscribe(data => {
+      console.log(data);
+      this.id = data.id
+      this.titulo = "Actualizar producto";
+      this.cuadroId = data.idProducto;
+      this.cuadroNombre = data.nombre;
+      this.cuadroCantidad = data.cantidad;
+      this.cuadroPrecio = data.precio;
+    })
   }
 
   obtenerProductos(){
@@ -34,9 +47,19 @@ export class ProductoComponentComponent implements OnInit {
     })
   }
 
+  guardarProducto(){
+    if(this.id === undefined){
+      //Crear producto nuevo
+      this.agregarProducto();
+    } else{
+      //actualizar producto existente
+      this.editarProducto(this.id);
+    }
+  }
+
   agregarProducto(){
     const nuevoProducto: Producto = {
-      id: this.cuadroId,
+      idProducto: this.cuadroId,
       nombre: this.cuadroNombre,
       cantidad: this.cuadroCantidad,
       precio: this.cuadroPrecio
@@ -48,6 +71,36 @@ export class ProductoComponentComponent implements OnInit {
     }, error => {
       console.log(error);
     })
+  }
+
+  editarProducto(id: string){
+    const nuevoProducto: Producto = {
+      idProducto: this.cuadroId,
+      nombre: this.cuadroNombre,
+      cantidad: this.cuadroCantidad,
+      precio: this.cuadroPrecio
+    }
+    this.productoService.editarProducto(id, nuevoProducto).then(() =>{
+      this.titulo = "Agregar producto nuevo";
+      this.limpiarCampos();
+      this.id = undefined;
+      alert('Producto actualizado exitosamente');
+    }, error => {
+      console.log(error);
+    })
+  }
+
+  eliminarProducto(id: any){
+    this.productoService.eliminarProducto(id).then(() => {
+      alert("Producto eliminado exitosamente " + id);
+    }, error => {
+      alert("Error al eliminar el producto");
+      console.log(error)
+    })
+  }
+
+  agregarEditarProducto(producto : Producto){
+    this.productoService.addEditarProducto(producto);
   }
 
   limpiarCampos(){
