@@ -5,6 +5,7 @@ import { Producto } from '../modelos/producto.model';
 import { ProductosService } from '../servicios/productos.service';
 import { Observable } from 'rxjs/internal/Observable';
 
+
 @Component({
   selector: 'app-producto-component',
   templateUrl: './producto-component.component.html',
@@ -18,10 +19,7 @@ export class ProductoComponentComponent implements OnInit {
   urlImagen:Observable<string> | undefined;
   uploadPercent: Observable<number | undefined> | undefined;
   cuadroUrl:string="";
-
-  cuadroProgreso = (<HTMLInputElement>document.getElementById("progreso"));
-  cuadroImagen = (<HTMLInputElement>document.getElementById("imagen"));
-
+  cuadroImagen:string="";
 
   productos:Producto[]=[];
 
@@ -41,7 +39,8 @@ export class ProductoComponentComponent implements OnInit {
       this.cuadroNombre = data.nombre;
       this.cuadroCantidad = data.cantidad;
       this.cuadroPrecio = data.precio;
-      this.cuadroUrl = data.imagen;
+      this.cuadroUrl = data.imagenUrl;
+      (<HTMLInputElement>document.getElementById("txtUrl")).value = data.imagenUrl;
     })
   }
 
@@ -61,7 +60,6 @@ export class ProductoComponentComponent implements OnInit {
   guardarProducto(){
     if(this.id === undefined){
       //Crear producto nuevo
-      //this.agregarImagenProducto();
       this.agregarProducto();
     } else{
       //actualizar producto existente
@@ -70,6 +68,11 @@ export class ProductoComponentComponent implements OnInit {
   }
 
   agregarImagenProducto(event: Event){
+    if(this.cuadroUrl!=""){
+      this.eliminarImagen(this.cuadroUrl);
+    }
+    
+    (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = true;
     const id = Math.random().toString(36).substring(2);
     const file = (event.target as HTMLInputElement).files?.item(0);
     const fileName = id + "_" + file?.name;
@@ -79,7 +82,10 @@ export class ProductoComponentComponent implements OnInit {
     console.log(file?.name);
 
     this.uploadPercent = task.percentageChanges()
-    task.snapshotChanges().pipe(finalize(() => this.urlImagen = ref.getDownloadURL())).subscribe();
+    task.snapshotChanges().pipe(finalize(() => {
+      this.urlImagen = ref.getDownloadURL(),
+      (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = false;
+    })).subscribe();
 
     console.log(id + " # " + file + " # " + filePath);
   }
@@ -90,9 +96,9 @@ export class ProductoComponentComponent implements OnInit {
       nombre: this.cuadroNombre,
       cantidad: this.cuadroCantidad,
       precio: this.cuadroPrecio,
-      imagen: (<HTMLInputElement>document.getElementById("txtUrl")).value
+      imagenUrl: (<HTMLInputElement>document.getElementById("txtUrl")).value,
+      imagenNombre: this.cuadroImagen.slice(12)
     }
-
     this.productoService.agregarProducto(nuevoProducto).then(() => {
       console.log("Producto registrado");
       console.log((<HTMLInputElement>document.getElementById("txtUrl")).value);
@@ -108,7 +114,8 @@ export class ProductoComponentComponent implements OnInit {
       nombre: this.cuadroNombre,
       cantidad: this.cuadroCantidad,
       precio: this.cuadroPrecio,
-      imagen: (<HTMLInputElement>document.getElementById("txtUrl")).value
+      imagenUrl: (<HTMLInputElement>document.getElementById("txtUrl")).value,
+      imagenNombre: this.cuadroImagen
     }
     this.productoService.editarProducto(id, nuevoProducto).then(() =>{
       this.titulo = "Agregar producto nuevo";
@@ -125,6 +132,9 @@ export class ProductoComponentComponent implements OnInit {
   }
 
   eliminarProducto(id: any, urlImagen: string){
+    //ventana de confirmacion
+
+
     this.eliminarImagen(urlImagen).then(() => {
       console.log("Imagen borrada");
     }, error => {
@@ -141,6 +151,7 @@ export class ProductoComponentComponent implements OnInit {
 
   agregarEditarProducto(producto : Producto){
     this.productoService.addEditarProducto(producto);
+    (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = false;
   }
 
   limpiarCampos(){
@@ -152,6 +163,7 @@ export class ProductoComponentComponent implements OnInit {
     (<HTMLInputElement>document.getElementById("imagen")).value ="";
     (<HTMLInputElement>document.getElementById("txtUrl")).value ="";
     this.urlImagen = undefined;
+    (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = true
   }
   //window.location.reload();
 }
