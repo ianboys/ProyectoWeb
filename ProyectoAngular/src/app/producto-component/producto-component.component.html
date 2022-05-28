@@ -1,9 +1,7 @@
-<script src="https://kit.fontawesome.com/f3a4db3942.js" crossorigin="anonymous"></script>
-
 <div class="main">
-    <div class="body" id="izq">
-        <h1>{{titulo | uppercase}}</h1>
-        <form>
+    <!--<form novalidate [formGroup] = "formulario">-->
+        <div class="body" id="izq">
+            <h1>{{titulo | uppercase}}</h1>
             <div class="form-group">
                 <label for="idLabel">ID Producto</label>
                 <input class="form-control" type="text" name="id" id="id" placeholder="id del producto" [(ngModel)]="cuadroId">
@@ -22,22 +20,30 @@
             </div>
             <div class="mb-3">
                 <label for="formFile" class="form-label">Imagen del Producto</label>
-                <input class="form-control" type="file" accept=".png, .jpg" name="imagen" id="imagen" [(ngModel)]="cuadroImagen" (change)="agregarImagenProducto($event)">
+                <input class="form-control" type="file" accept=".png, .jpg" name="imagen" id="imagen" (change)="agregarImagenProducto($event)">
             </div>
-            <input type="text" [value]="urlImagen | async" name="urlImagen" id="urlImagen" [(ngModel)]="cuadroUrl">
-            <button type="submit" class="btn btn-primary" (click)="guardarProducto()">Agregar Producto</button>
-        </form>
-    </div>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped bg-success progress-bar-animated" name="progreso" id="progreso" role="progressbar"
+                    [style.width]="(uploadPercent | async) + '%'">
+                </div>
+            </div>
+            <input type="text" [value]="urlImagen | async" name="txtUrl" id="txtUrl" hidden>
+            <button *ngIf="urlImagen | async; else btnDisabled" type="submit" class="btn btn-primary" (click)="guardarProducto()">Agregar Producto</button>
+            <ng-template #btnDisabled>
+                <button type="submit" disabled="true" class="btn btn-secondary">Agregar Producto</button>
+            </ng-template>
+        </div>
+    <!--</form>-->
 
     <div class="body" id="der">
         <h1>Productos</h1>
         <div id="der2">
             <div *ngFor="let producto of productos" class="div-producto">
                 <img src="{{producto.imagen}}" alt="{{producto.idProducto}}">
-                <!--{{producto.idProducto}} {{producto.nombre}} {{producto.cantidad}} {{producto.precio}}-->
                 <!--<i class="fas fa-trash"></i>-->
-                <button type="button" class="btn btn-danger" (click)="eliminarProducto(producto.id)">Eliminar</button>
+                <button type="button" class="btn btn-danger" (click)="eliminarProducto(producto.id, producto.imagen)">Eliminar</button>
                 <button type="button" class="btn btn-warning" (click)="agregarEditarProducto(producto)">Editar</button>
+                <!--<button type="radio" class="btn btn-outline-warning active" data-bs-toggle="button" autocomplete="off" (click)="agregarEditarProducto(producto)">Editar</button>-->
             </div>
         </div>
     </div>

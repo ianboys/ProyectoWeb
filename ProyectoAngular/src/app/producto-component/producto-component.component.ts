@@ -16,9 +16,12 @@ export class ProductoComponentComponent implements OnInit {
   cuadroCantidad:number=0;
   cuadroPrecio:number=0;
   urlImagen:Observable<string> | undefined;
-  uploadPercent: Observable<number> | undefined;
+  uploadPercent: Observable<number | undefined> | undefined;
   cuadroUrl:string="";
-  cuadroImagen:string="";
+
+  cuadroProgreso = (<HTMLInputElement>document.getElementById("progreso"));
+  cuadroImagen = (<HTMLInputElement>document.getElementById("imagen"));
+
 
   productos:Producto[]=[];
 
@@ -38,6 +41,7 @@ export class ProductoComponentComponent implements OnInit {
       this.cuadroNombre = data.nombre;
       this.cuadroCantidad = data.cantidad;
       this.cuadroPrecio = data.precio;
+      this.cuadroUrl = data.imagen;
     })
   }
 
@@ -68,11 +72,13 @@ export class ProductoComponentComponent implements OnInit {
   agregarImagenProducto(event: Event){
     const id = Math.random().toString(36).substring(2);
     const file = (event.target as HTMLInputElement).files?.item(0);
-    const filePath = `uploads/producto_${id}`;
+    const fileName = id + "_" + file?.name;
+    const filePath = `uploads/${fileName}`;
     const ref = this.storage.ref(filePath);
     const task = this.storage.upload(filePath, file);
+    console.log(file?.name);
 
-    //this.uploadPercent = task.percentageChanges()
+    this.uploadPercent = task.percentageChanges()
     task.snapshotChanges().pipe(finalize(() => this.urlImagen = ref.getDownloadURL())).subscribe();
 
     console.log(id + " # " + file + " # " + filePath);
@@ -84,12 +90,12 @@ export class ProductoComponentComponent implements OnInit {
       nombre: this.cuadroNombre,
       cantidad: this.cuadroCantidad,
       precio: this.cuadroPrecio,
-      imagen: (<HTMLInputElement>document.getElementById("urlImagen")).value
+      imagen: (<HTMLInputElement>document.getElementById("txtUrl")).value
     }
 
     this.productoService.agregarProducto(nuevoProducto).then(() => {
       console.log("Producto registrado");
-      console.log((<HTMLInputElement>document.getElementById("urlImagen")).value);
+      console.log((<HTMLInputElement>document.getElementById("txtUrl")).value);
       this.limpiarCampos();
     }, error => {
       console.log(error);
@@ -102,7 +108,7 @@ export class ProductoComponentComponent implements OnInit {
       nombre: this.cuadroNombre,
       cantidad: this.cuadroCantidad,
       precio: this.cuadroPrecio,
-      imagen: (<HTMLInputElement>document.getElementById("urlImagen")).value
+      imagen: (<HTMLInputElement>document.getElementById("txtUrl")).value
     }
     this.productoService.editarProducto(id, nuevoProducto).then(() =>{
       this.titulo = "Agregar producto nuevo";
@@ -114,7 +120,17 @@ export class ProductoComponentComponent implements OnInit {
     })
   }
 
-  eliminarProducto(id: any){
+  eliminarImagen(urlImagen: string){
+    return this.storage.storage.refFromURL(urlImagen).delete();
+  }
+
+  eliminarProducto(id: any, urlImagen: string){
+    this.eliminarImagen(urlImagen).then(() => {
+      console.log("Imagen borrada");
+    }, error => {
+      console.log(error)
+    })
+
     this.productoService.eliminarProducto(id).then(() => {
       alert("Producto eliminado exitosamente " + id);
     }, error => {
@@ -128,12 +144,14 @@ export class ProductoComponentComponent implements OnInit {
   }
 
   limpiarCampos(){
-    this.cuadroId="";
-    this.cuadroNombre="";
-    this.cuadroCantidad=0;
-    this.cuadroPrecio=0;
-    this.cuadroUrl="";
-    this.cuadroImagen="";
+    this.cuadroId = "";
+    this.cuadroNombre = "";
+    this.cuadroCantidad = 0;
+    this.cuadroPrecio = 0;
+    (<HTMLInputElement>document.getElementById("progreso")).style.width = "0";
+    (<HTMLInputElement>document.getElementById("imagen")).value ="";
+    (<HTMLInputElement>document.getElementById("txtUrl")).value ="";
+    this.urlImagen = undefined;
   }
-
+  //window.location.reload();
 }
