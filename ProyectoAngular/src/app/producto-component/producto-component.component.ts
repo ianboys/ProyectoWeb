@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { finalize } from 'rxjs/operators';
 import { Producto } from '../modelos/producto.model';
@@ -82,7 +82,7 @@ export class ProductoComponentComponent implements OnInit {
     const id = Math.random().toString(36).substring(2);
     const file = (event.target as HTMLInputElement).files?.item(0);
     const fileName = id + "_" + file?.name;
-    const filePath = `uploads/${fileName}`;
+    const filePath = `productos/${fileName}`;
     const ref = this.storage.ref(filePath);
     const task = this.storage.upload(filePath, file);
     console.log(file?.name);
@@ -125,7 +125,7 @@ export class ProductoComponentComponent implements OnInit {
       cantidad: this.cuadroCantidad,
       precio: this.cuadroPrecio,
       imagenUrl: (<HTMLInputElement>document.getElementById("txtUrl")).value,
-      imagenNombre: this.cuadroImagen
+      imagenNombre: this.cuadroImagen.slice(12)
     }
     this.productoService.editarProducto(id, nuevoProducto).then(() =>{
       this.titulo = "Agregar producto nuevo";
@@ -187,6 +187,8 @@ export class ProductoComponentComponent implements OnInit {
     (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = true;
     this.idEliminar="";
     this.urlImagenEliminar="";
+    this.id = undefined;
+    this.cuadroUrl="";
   }
   //window.location.reload();
 }
