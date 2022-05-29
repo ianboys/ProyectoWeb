@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { FormsModule} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -9,7 +9,7 @@ import { ClienteComponentComponent } from './cliente-component/cliente-component
 import { ProductoComponentComponent } from './producto-component/producto-component.component';
 import { OrdenDetalleComponentComponent } from './orden-detalle-component/orden-detalle-component.component';
 import { OrdenDesgloseComponentComponent } from './orden-desglose-component/orden-desglose-component.component';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes} from '@angular/router';
 import { ProductosService } from './servicios/productos.service';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
@@ -19,7 +19,8 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
-import { ConfirmacionComponent } from './producto-component/confirmacion/confirmacion.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 
 
 const appRoutes:Routes=[
@@ -37,8 +38,7 @@ const appRoutes:Routes=[
     ClienteComponentComponent,
     ProductoComponentComponent,
     OrdenDetalleComponentComponent,
-    OrdenDesgloseComponentComponent,
-    ConfirmacionComponent
+    OrdenDesgloseComponentComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +50,8 @@ const appRoutes:Routes=[
     provideFirestore(() => getFirestore()),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
-    AngularFireStorageModule
+    AngularFireStorageModule,
+    NgbModule
   ],
   providers: [ProductosService],
   bootstrap: [AppComponent]

@@ -4,6 +4,7 @@ import { finalize } from 'rxjs/operators';
 import { Producto } from '../modelos/producto.model';
 import { ProductosService } from '../servicios/productos.service';
 import { Observable } from 'rxjs/internal/Observable';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -26,9 +27,12 @@ export class ProductoComponentComponent implements OnInit {
   titulo = "Agregar producto nuevo";
   id?: string;
 
-  confirmacion?:boolean;
+  idEliminar:string="";
+  urlImagenEliminar:string="";
 
-  constructor(private productoService:ProductosService, private storage: AngularFireStorage) { }
+
+
+  constructor(private productoService:ProductosService, private storage: AngularFireStorage, private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.obtenerProductos();
@@ -133,18 +137,23 @@ export class ProductoComponentComponent implements OnInit {
     })
   }
 
-  abrirModalConfirmacion(id:string | undefined, imagenUrl:string){
-    this.confirmacion = true;
+  abrirModalConfirmacion(id:string | undefined, imagenUrl:string, contenido:any){
+    this.modalService.open(contenido);
+    (<HTMLInputElement>document.getElementById("idProducto")).innerHTML = id!;
+    this.idEliminar=id!;
+    this.urlImagenEliminar=imagenUrl;
+  }
+
+  cerrarModalConfirmacion(contenido:any){
+    this.modalService.dismissAll(contenido);
+    this.limpiarCampos();
   }
 
   eliminarImagen(urlImagen: string){
     return this.storage.storage.refFromURL(urlImagen).delete();
   }
 
-  eliminarProducto(id: any, urlImagen: string){
-    //ventana de confirmacion
-
-
+  eliminarProducto(id: any, urlImagen: string, contenido:any){
     this.eliminarImagen(urlImagen).then(() => {
       console.log("Imagen borrada");
     }, error => {
@@ -152,8 +161,9 @@ export class ProductoComponentComponent implements OnInit {
     })
 
     this.productoService.eliminarProducto(id).then(() => {
+      this.cerrarModalConfirmacion(contenido);
       this.limpiarCampos();
-      alert("Producto eliminado exitosamente " + id);
+      //alert("Producto eliminado exitosamente ");
     }, error => {
       alert("Error al eliminar el producto");
       console.log(error)
@@ -174,7 +184,9 @@ export class ProductoComponentComponent implements OnInit {
     (<HTMLInputElement>document.getElementById("imagen")).value ="";
     (<HTMLInputElement>document.getElementById("txtUrl")).value ="";
     this.urlImagen = undefined;
-    (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = true
+    (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = true;
+    this.idEliminar="";
+    this.urlImagenEliminar="";
   }
   //window.location.reload();
 }

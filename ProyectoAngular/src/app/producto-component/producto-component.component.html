@@ -1,6 +1,3 @@
-<div *ngIf="confirmacion == true">
-    <app-confirmacion></app-confirmacion>
-</div>
 <div class="main">
     <form ngNativeValidate >
         <div class="body" id="izq">
@@ -37,7 +34,7 @@
                     [style.width]="(uploadPercent | async) + '%'">
                 </div>
             </div>
-            <input type="text" [value]="urlImagen | async" name="txtUrl" id="txtUrl" >
+            <input type="text" [value]="urlImagen | async" name="txtUrl" id="txtUrl" hidden>
             <input  type="submit" class="btn btn-primary" id="btnAgregar" value="Agregar Producto" disabled="true" (click)="guardarProducto()">
             <!--<ng-template #btnDisabled>
                 <button type="submit" disabled="true" class="btn btn-secondary">Agregar Producto</button>
@@ -51,7 +48,7 @@
             <div *ngFor="let producto of productos" class="div-producto">
                 <img src="{{producto.imagenUrl}}" alt="{{producto.idProducto}}">
                 <!--<i class="fas fa-trash"></i>-->
-                <button type="button" class="btn btn-danger" (click)="abrirModalConfirmacion(producto.id, producto.imagenUrl)">Eliminar</button>
+                <button type="button" class="btn btn-danger" (click)="abrirModalConfirmacion(producto.id, producto.imagenUrl, modal)">Eliminar</button>
                 <button type="button" class="btn btn-warning" (click)="agregarEditarProducto(producto)">Editar</button>
                 <!--<button type="radio" class="btn btn-outline-warning active" data-bs-toggle="button" autocomplete="off" (click)="agregarEditarProducto(producto)">Editar</button>-->
             </div>
@@ -59,3 +56,26 @@
     </div>
 </div>
 
+<ng-template class="modal fade" id="modal" #modal tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-tittle" id="modalLabel"> Eliminar Producto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cerrarModalConfirmacion(modal)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal_body">
+                ¿Esta seguro que desea eliminar el producto con el Id: <label id="idProducto"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cerrarModalConfirmacion(modal)">Cancelar</button>
+                <button type="button" class="btn btn-danger" (click)="eliminarProducto(idEliminar, urlImagenEliminar, modal)">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!--<div *ngIf="confirmacion == true">
+    <app-confirmacion></app-confirmacion>
+</div>-->
