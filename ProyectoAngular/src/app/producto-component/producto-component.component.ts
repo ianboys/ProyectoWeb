@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { finalize } from 'rxjs/operators';
 import { Producto } from '../modelos/producto.model';
@@ -24,7 +24,9 @@ export class ProductoComponentComponent implements OnInit {
   productos:Producto[]=[];
 
   titulo = "Agregar producto nuevo";
-  id: string | undefined;
+  id?: string;
+
+  confirmacion?:boolean;
 
   constructor(private productoService:ProductosService, private storage: AngularFireStorage) { }
 
@@ -91,6 +93,10 @@ export class ProductoComponentComponent implements OnInit {
   }
 
   agregarProducto(){
+    if(this.cuadroId=="" || this.cuadroNombre=="" || this.cuadroPrecio==0){
+      alert("Favor de rellenar los campos requeridos");
+      return;
+    }
     const nuevoProducto: Producto = {
       idProducto: this.cuadroId,
       nombre: this.cuadroNombre,
@@ -127,6 +133,10 @@ export class ProductoComponentComponent implements OnInit {
     })
   }
 
+  abrirModalConfirmacion(id:string | undefined, imagenUrl:string){
+    this.confirmacion = true;
+  }
+
   eliminarImagen(urlImagen: string){
     return this.storage.storage.refFromURL(urlImagen).delete();
   }
@@ -142,6 +152,7 @@ export class ProductoComponentComponent implements OnInit {
     })
 
     this.productoService.eliminarProducto(id).then(() => {
+      this.limpiarCampos();
       alert("Producto eliminado exitosamente " + id);
     }, error => {
       alert("Error al eliminar el producto");

@@ -29,7 +29,7 @@ h1{
     gap: 10px;
 }
 
-button{
+button, #btnAgregar{
     font-size: large;
     padding: 5px;
     margin-top: 3%;

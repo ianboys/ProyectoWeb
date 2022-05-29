@@ -1,22 +1,32 @@
+<div *ngIf="confirmacion == true">
+    <app-confirmacion></app-confirmacion>
+</div>
 <div class="main">
-    <!--<form novalidate [formGroup] = "formulario">-->
+    <form ngNativeValidate >
         <div class="body" id="izq">
             <h1>{{titulo | uppercase}}</h1>
             <div class="form-group">
                 <label for="idLabel">ID Producto*</label>
-                <input class="form-control" type="text" name="id" id="id" placeholder="id del producto" [(ngModel)]="cuadroId" required>
+                <input class="form-control" type="text" name="id" id="id" placeholder="id del producto" required [(ngModel)]="cuadroId" #id="ngModel">
             </div>
+
+            <!--<div *ngIf="id.invalid && (id.dirty || id.touched)" class="alert">
+                <div *ngIf="id.errors?.['required']" style="color: red">
+                    Id requerido
+                </div>
+            </div>-->
+            
             <div class="form-group">
                 <label for="nombreLabel">Nombre*</label>
-                <input class="form-control" type="text" name="nombre" id="nombre" placeholder="nombre del producto" [(ngModel)]="cuadroNombre" required>
+                <input class="form-control" type="text" name="nombre" id="nombre" placeholder="nombre del producto" required [(ngModel)]="cuadroNombre" #nombre="ngModel">
             </div>
             <div class="form-group">
                 <label for="cantidadLabel">Cantidad por Paquete</label>
-                <input class="form-control" type="number" name="cantidad" id="cantidad" placeholder="opcional" [(ngModel)]="cuadroCantidad">
+                <input class="form-control" type="number" name="cantidad" id="cantidad" [(ngModel)]="cuadroCantidad" #cantidad="ngModel">
             </div>
             <div class="form-group">
                 <label for="precioLabel">Precio*</label>
-                <input class="form-control" type="number" name="precio" id="precio" placeholder="Precio del producto" [(ngModel)]="cuadroPrecio" required>
+                <input class="form-control" type="number" name="precio" id="precio" placeholder="Precio del producto" required [(ngModel)]="cuadroPrecio" #precio="ngModel">
             </div>
             <div class="mb-3">
                 <label for="formFile" class="form-label">Imagen del Producto*</label>
@@ -27,13 +37,13 @@
                     [style.width]="(uploadPercent | async) + '%'">
                 </div>
             </div>
-            <input type="text" [value]="urlImagen | async" name="txtUrl" id="txtUrl" hidden>
-            <button  type="submit" class="btn btn-primary" id="btnAgregar" disabled="true" (click)="guardarProducto()">Agregar Producto</button>
+            <input type="text" [value]="urlImagen | async" name="txtUrl" id="txtUrl" >
+            <input  type="submit" class="btn btn-primary" id="btnAgregar" value="Agregar Producto" disabled="true" (click)="guardarProducto()">
             <!--<ng-template #btnDisabled>
                 <button type="submit" disabled="true" class="btn btn-secondary">Agregar Producto</button>
             </ng-template>-->
         </div>
-    <!--</form>-->
+    </form>
 
     <div class="body" id="der">
         <h1>Productos</h1>
@@ -41,10 +51,11 @@
             <div *ngFor="let producto of productos" class="div-producto">
                 <img src="{{producto.imagenUrl}}" alt="{{producto.idProducto}}">
                 <!--<i class="fas fa-trash"></i>-->
-                <button type="button" class="btn btn-danger" (click)="eliminarProducto(producto.id, producto.imagenUrl)">Eliminar</button>
+                <button type="button" class="btn btn-danger" (click)="abrirModalConfirmacion(producto.id, producto.imagenUrl)">Eliminar</button>
                 <button type="button" class="btn btn-warning" (click)="agregarEditarProducto(producto)">Editar</button>
                 <!--<button type="radio" class="btn btn-outline-warning active" data-bs-toggle="button" autocomplete="off" (click)="agregarEditarProducto(producto)">Editar</button>-->
             </div>
         </div>
     </div>
 </div>
+
