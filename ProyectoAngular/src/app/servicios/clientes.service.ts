@@ -36,4 +36,8 @@ export class ClienteService{
     editarCliente(id: string, cliente: any): Promise<any>{
         return this.firestore.collection('clientes').doc(id).update(cliente);
     }
+
+    buscarCliente(nombre: string){
+        return this.firestore.collection('clientes').doc(nombre).valueChanges();
+    }
 }

@@ -20000,7 +20000,7 @@
                 <label for="codigoLabel">Codigo Postal*</label>
                 <input class="form-control" type="number" name="codigo" id="codigo" required [(ngModel)]="cuadroCodigo" #codigo="ngModel">
             </div>
-            <!--<div class="mb-3">
+            <div class="mb-3">
                 <label for="formFile" class="form-label">Imagen del Negocio*</label>
                 <input class="form-control" type="file" accept=".png, .jpg" name="imagen" id="imagen" (change)="agregarImagenCliente($event)" [(ngModel)]="cuadroImagen">
             </div>
@@ -20009,11 +20009,8 @@
                     [style.width]="(uploadPercent | async) + '%'">
                 </div>
             </div>
-            <input type="text" [value]="urlImagen | async" name="txtUrl" id="txtUrl" hidden>-->
+            <input type="text" [value]="urlImagen | async" name="txtUrl" id="txtUrl" hidden>
             <input  type="submit" class="btn btn-primary" id="btnAgregar" value="Agregar Cliente" (click)="guardarCliente()">
-            <!--<ng-template #btnDisabled>
-                <button type="submit" disabled="true" class="btn btn-secondary">Agregar Producto</button>
-            </ng-template>-->
         </div>
     </form>
 
@@ -20021,12 +20018,10 @@
         <h1>Clientes</h1>
         <div id="der2">
             <div *ngFor="let cliente of clientes" class="div-cliente">
-                <button type="button" class="btn btn-danger" id="btnEliminar" (click)="abrirModalConfirmacion(cliente.id, modal)">Eliminar</button>
+                <img src="{{cliente.imagenUrl}}" alt="{{cliente.nombre}}">
+                <h5>{{cliente.nombre}}</h5>
+                <button type="button" class="btn btn-danger" id="btnEliminar" (click)="abrirModalConfirmacion(cliente.id, cliente.imagenUrl, modal)">Eliminar</button>
                 <button type="button" class="btn btn-warning" id="btnEditar" (click)="agregarEditarCliente(cliente)">Editar</button>
-                {{cliente.nombre}}, {{cliente.direccion}}, {{cliente.estado}}, {{cliente.ciudad}}, {{cliente.codigoPostal}}
-                <!--<img src="{{cliente.imagenUrl}}" alt="{{cliente.nombre}}">-->
-                <!--<i class="fas fa-trash"></i>-->
-                <!--<button type="radio" class="btn btn-outline-warning active" data-bs-toggle="button" autocomplete="off" (click)="agregarEditarProducto(producto)">Editar</button>-->
             </div>
         </div>
     </div>
@@ -20046,7 +20041,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cerrarModalConfirmacion(modal)">Cancelar</button>
-                <button type="button" class="btn btn-danger" (click)="eliminarCliente(idEliminar, modal)">Eliminar</button>
+                <button type="button" class="btn btn-danger" (click)="eliminarCliente(idEliminar, urlImagenEliminar, modal)">Eliminar</button>
             </div>
         </div>
     </div>

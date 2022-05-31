@@ -1,28 +1,27 @@
 <div class="main">
     <form ngNativeValidate >
         <div class="body" id="izq">
-            <h1>{{titulo | uppercase}}</h1>
-            <div class="form-group">
-                <label for="clienteLabel">Cliente*</label>
-                <select class="form-select" name="cliente" id="cliente" placeholder="Seleccione un cliente" required>
-                    <option selected>Seleccione un cliente</option>
-                  </select>
+            <div id="izq-sup">
+                <h1>{{titulo | uppercase}}</h1>
+                <div class="form-group">
+                    <label for="clienteLabel">Cliente*</label>
+                    <select class="form-select" name="cliente" id="cliente" placeholder="Seleccione un cliente" required [(ngModel)]="cuadroCliente" #cliente="ngModel">
+                        <option selected>Seleccione un cliente</option>
+                        <option *ngFor="let cliente of clientes" value="{{cliente.nombre}}">{{cliente.nombre}}</option>
+                    </select>
+                </div>
+                <input type="date" name="fecha" id="fecha" required [(ngModel)]="cuadroFecha" #fecha="ngModel">
+                <input  type="submit" class="btn btn-primary" id="btnAgregar" value="Agregar Productos" (click)="agregarProductos()">
             </div>
-            <label for="date" class="col-1 col-form-label">Fecha</label>
-            <div class="col-5">
-              <div class="input-group date" id="datepicker">
-                <input type="text" class="form-control" id="date"/>
-                <span class="input-group-append">
-                  <span class="input-group-text bg-light d-block">
-                    <i class="fa fa-calendar">a</i>
-                  </span>
-                </span>
-              </div>
+            <br>
+            <div id="izq-inf">
+                <ul class="list-group">
+                    <li class="list-group-item" *ngFor="let productoOrden of productosOrden">
+                        {{productoOrden.idProducto}} {{productoOrden.nombre}} {{productoOrden.cantidad}} {{productoOrden.precio}} {{productoOrden.peso}}
+                        <button>a</button>
+                    </li>
+                </ul>
             </div>
-            <input  type="submit" class="btn btn-primary" id="btnAgregar" value="Hacer Orden">
-            <!--<ng-template #btnDisabled>
-                <button type="submit" disabled="true" class="btn btn-secondary">Agregar Producto</button>
-            </ng-template>-->
         </div>
     </form>
 
@@ -31,8 +30,8 @@
         <div id="der2">
             <div *ngFor="let producto of productos" class="div-producto">
                 <img src="{{producto.imagenUrl}}" alt="{{producto.idProducto}}">
-                <input type="checkbox" class="btn-check" id="{{producto.idProducto}}" autocomplete="off">
-                <label  class="btn btn-success" for="{{producto.idProducto}}" id="labelProducto">Seleccionar</label>
+                <input class="form-check-input" type="checkbox" id="{{producto.idProducto}}" autocomplete="off" (change)="agregarQuitarProducto(producto.id)">
+                <label class="form-chack-label" id="labelProducto">Seleccionar</label>
             </div>
         </div>
     </div>

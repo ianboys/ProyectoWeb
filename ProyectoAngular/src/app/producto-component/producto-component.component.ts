@@ -21,6 +21,7 @@ export class ProductoComponentComponent implements OnInit {
   uploadPercent: Observable<number | undefined> | undefined;
   cuadroUrl:string="";
   cuadroImagen:string="";
+  cuadroPeso:boolean=false;
 
   productos:Producto[]=[];
 
@@ -29,8 +30,6 @@ export class ProductoComponentComponent implements OnInit {
 
   idEliminar:string="";
   urlImagenEliminar:string="";
-
-
 
   constructor(private productoService:ProductosService, private storage: AngularFireStorage, private modalService: NgbModal) { }
 
@@ -45,6 +44,7 @@ export class ProductoComponentComponent implements OnInit {
       this.cuadroNombre = data.nombre;
       this.cuadroCantidad = data.cantidad;
       this.cuadroPrecio = data.precio;
+      this.cuadroPeso = data.peso;
       this.cuadroUrl = data.imagenUrl;
       (<HTMLInputElement>document.getElementById("txtUrl")).value = data.imagenUrl;
     })
@@ -74,7 +74,7 @@ export class ProductoComponentComponent implements OnInit {
   }
 
   agregarImagenProducto(event: Event){
-    if(this.cuadroUrl!=""){
+    if(this.cuadroUrl!="" && this.cuadroUrl!="https://firebasestorage.googleapis.com/v0/b/proyectoangularfacturacion.appspot.com/o/Producto%20por%20defecto.png?alt=media&token=73984618-84b8-4f61-9077-c73a14234838"){
       this.eliminarImagen(this.cuadroUrl);
     }
     
@@ -97,17 +97,23 @@ export class ProductoComponentComponent implements OnInit {
   }
 
   agregarProducto(){
+    var url:string="";
     if(this.cuadroId=="" || this.cuadroNombre=="" || this.cuadroPrecio==0){
       alert("Favor de rellenar los campos requeridos");
       return;
+    }
+    if(this.cuadroUrl==""){
+      url="https://firebasestorage.googleapis.com/v0/b/proyectoangularfacturacion.appspot.com/o/Producto%20por%20defecto.png?alt=media&token=73984618-84b8-4f61-9077-c73a14234838";
+    }else{
+      url=this.cuadroUrl;
     }
     const nuevoProducto: Producto = {
       idProducto: this.cuadroId,
       nombre: this.cuadroNombre,
       cantidad: this.cuadroCantidad,
       precio: this.cuadroPrecio,
-      imagenUrl: (<HTMLInputElement>document.getElementById("txtUrl")).value,
-      imagenNombre: this.cuadroImagen.slice(12)
+      peso: this.cuadroPeso,
+      imagenUrl: url
     }
     this.productoService.agregarProducto(nuevoProducto).then(() => {
       console.log("Producto registrado");
@@ -124,8 +130,8 @@ export class ProductoComponentComponent implements OnInit {
       nombre: this.cuadroNombre,
       cantidad: this.cuadroCantidad,
       precio: this.cuadroPrecio,
-      imagenUrl: (<HTMLInputElement>document.getElementById("txtUrl")).value,
-      imagenNombre: this.cuadroImagen.slice(12)
+      peso: this.cuadroPeso,
+      imagenUrl: (<HTMLInputElement>document.getElementById("txtUrl")).value
     }
     this.productoService.editarProducto(id, nuevoProducto).then(() =>{
       this.titulo = "Agregar producto nuevo";
@@ -154,12 +160,13 @@ export class ProductoComponentComponent implements OnInit {
   }
 
   eliminarProducto(id: any, urlImagen: string, contenido:any){
-    this.eliminarImagen(urlImagen).then(() => {
-      console.log("Imagen borrada");
-    }, error => {
-      console.log(error)
-    })
-
+    if(urlImagen!="https://firebasestorage.googleapis.com/v0/b/proyectoangularfacturacion.appspot.com/o/Producto%20por%20defecto.png?alt=media&token=73984618-84b8-4f61-9077-c73a14234838"){
+      this.eliminarImagen(urlImagen).then(() => {
+        console.log("Imagen borrada");
+      }, error => {
+        console.log(error)
+      })
+    }
     this.productoService.eliminarProducto(id).then(() => {
       this.cerrarModalConfirmacion(contenido);
       this.limpiarCampos();
@@ -184,7 +191,7 @@ export class ProductoComponentComponent implements OnInit {
     (<HTMLInputElement>document.getElementById("imagen")).value ="";
     (<HTMLInputElement>document.getElementById("txtUrl")).value ="";
     this.urlImagen = undefined;
-    (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = true;
+    (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = false;
     this.idEliminar="";
     this.urlImagenEliminar="";
     this.id = undefined;

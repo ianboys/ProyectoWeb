@@ -41,7 +41,7 @@ button, #btnAgregar, #labelProducto{
     height: 150px;
     margin-bottom: 50px;
 
-    background-color: orange;
+    /*background-color: orange;*/
 }
 
 img{

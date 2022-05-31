@@ -5,14 +5,7 @@
             <div class="form-group">
                 <label for="idLabel">ID Producto*</label>
                 <input class="form-control" type="text" name="id" id="id" placeholder="id del producto" required [(ngModel)]="cuadroId" #id="ngModel">
-            </div>
-
-            <!--<div *ngIf="id.invalid && (id.dirty || id.touched)" class="alert">
-                <div *ngIf="id.errors?.['required']" style="color: red">
-                    Id requerido
-                </div>
-            </div>-->
-            
+            </div>          
             <div class="form-group">
                 <label for="nombreLabel">Nombre*</label>
                 <input class="form-control" type="text" name="nombre" id="nombre" placeholder="nombre del producto" required [(ngModel)]="cuadroNombre" #nombre="ngModel">
@@ -25,6 +18,10 @@
                 <label for="precioLabel">Precio*</label>
                 <input class="form-control" type="number" name="precio" id="precio" placeholder="Precio del producto" required [(ngModel)]="cuadroPrecio" #precio="ngModel">
             </div>
+            <div class="form-group">
+                <input class="form-check-input" type="checkbox" id="peso" name="peso" [(ngModel)]="cuadroPeso" #peso="ngModel">
+                <label class="form-check-label">¿Se ocupa peso?</label>
+              </div>
             <div class="mb-3">
                 <label for="formFile" class="form-label">Imagen del Producto*</label>
                 <input class="form-control" type="file" accept=".png, .jpg" name="imagen" id="imagen" (change)="agregarImagenProducto($event)" [(ngModel)]="cuadroImagen">
@@ -35,7 +32,7 @@
                 </div>
             </div>
             <input type="text" [value]="urlImagen | async" name="txtUrl" id="txtUrl" hidden>
-            <input  type="submit" class="btn btn-primary" id="btnAgregar" value="Agregar Producto" disabled="true" (click)="guardarProducto()">
+            <input  type="submit" class="btn btn-primary" id="btnAgregar" value="Agregar Producto" (click)="guardarProducto()">
             <!--<ng-template #btnDisabled>
                 <button type="submit" disabled="true" class="btn btn-secondary">Agregar Producto</button>
             </ng-template>-->
@@ -47,6 +44,8 @@
         <div id="der2">
             <div *ngFor="let producto of productos" class="div-producto">
                 <img src="{{producto.imagenUrl}}" alt="{{producto.idProducto}}">
+                <h5>{{producto.nombre}}</h5>
+
                 <!--<i class="fas fa-trash"></i>-->
                 <button type="button" class="btn btn-danger" (click)="abrirModalConfirmacion(producto.id, producto.imagenUrl, modal)">Eliminar</button>
                 <button type="button" class="btn btn-warning" (click)="agregarEditarProducto(producto)">Editar</button>

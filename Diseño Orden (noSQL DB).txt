@@ -1,0 +1,30 @@
+campos de una orden
+Orden{
+	-cliente
+	-fecha
+	-productos{
+		-id
+		-nombre
+		-cantidad
+		-peso (dependiendo checkbox)
+	}
+}
+
+
+EJEMPLO
+Orden{
+	-Cliente: Tacos El Guero,
+	-Fecha: 30/05/2022,
+	-productos:[
+		{-Id: A123,
+		 -Nombre: Carne,
+		 -cantidad: 5,
+		 -peso: 0 (lb)
+		},
+		{-Id: B456,
+		 -Nombre: Queso,
+		 -cantidad: 3,
+		 -peso: 32 (lb)
+		}
+	]
+}

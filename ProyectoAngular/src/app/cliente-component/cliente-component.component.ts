@@ -17,6 +17,10 @@ export class ClienteComponentComponent implements OnInit {
   cuadroCiudad:string="";
   cuadroEstado:string="";
   cuadroCodigo:number=0;
+  urlImagen:Observable<string> | undefined;
+  uploadPercent: Observable<number | undefined> | undefined;
+  cuadroUrl:string="";
+  cuadroImagen:string="";
 
   clientes:Cliente[]=[];
 
@@ -24,6 +28,7 @@ export class ClienteComponentComponent implements OnInit {
   id?: string;
 
   idEliminar:string="";
+  urlImagenEliminar:string="";
 
   constructor(private clienteService:ClienteService, private storage: AngularFireStorage, private modalService: NgbModal) { }
 
@@ -39,6 +44,8 @@ export class ClienteComponentComponent implements OnInit {
       this.cuadroCiudad = data.ciudad;
       this.cuadroEstado = data.estado;
       this.cuadroCodigo = data.codigoPostal;
+      this.cuadroUrl = data.imagenUrl;
+      (<HTMLInputElement>document.getElementById("txtUrl")).value = data.imagenUrl;
     })
   }
 
@@ -65,10 +72,39 @@ export class ClienteComponentComponent implements OnInit {
     }
   }
 
+  agregarImagenCliente(event: Event){
+    if(this.cuadroUrl!="" && this.cuadroUrl!="https://firebasestorage.googleapis.com/v0/b/proyectoangularfacturacion.appspot.com/o/blank-profile-picture.png?alt=media&token=824d1416-efeb-4208-b218-77cf7dcfb872"){
+      this.eliminarImagen(this.cuadroUrl);
+    }
+    
+    (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = true;
+    const id = Math.random().toString(36).substring(2);
+    const file = (event.target as HTMLInputElement).files?.item(0);
+    const fileName = id + "_" + file?.name;
+    const filePath = `clientes/${fileName}`;
+    const ref = this.storage.ref(filePath);
+    const task = this.storage.upload(filePath, file);
+    console.log(file?.name);
+
+    this.uploadPercent = task.percentageChanges()
+    task.snapshotChanges().pipe(finalize(() => {
+      this.urlImagen = ref.getDownloadURL(),
+      (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = false;
+    })).subscribe();
+
+    console.log(id + " # " + file + " # " + filePath);
+  }
+
   agregarCliente(){
+    var url:string="";
     if(this.cuadroNombre=="" || this.cuadroDireccion=="" || this.cuadroCiudad=="" || this.cuadroEstado=="" || this.cuadroCodigo==0){
       alert("Favor de rellenar los campos requeridos");
       return;
+    }
+    if(this.cuadroUrl==""){
+      url="https://firebasestorage.googleapis.com/v0/b/proyectoangularfacturacion.appspot.com/o/blank-profile-picture.png?alt=media&token=824d1416-efeb-4208-b218-77cf7dcfb872";
+    }else{
+      url=this.cuadroUrl;
     }
     const nuevoCliente: Cliente = {
       nombre: this.cuadroNombre,
@@ -76,6 +112,7 @@ export class ClienteComponentComponent implements OnInit {
       ciudad: this.cuadroCiudad,
       estado: this.cuadroEstado,
       codigoPostal: this.cuadroCodigo,
+      imagenUrl: url
     }
     this.clienteService.agregarCliente(nuevoCliente).then(() => {
       console.log("Cliente registrado");
@@ -91,7 +128,8 @@ export class ClienteComponentComponent implements OnInit {
       direccion: this.cuadroDireccion,
       ciudad: this.cuadroCiudad,
       estado: this.cuadroEstado,
-      codigoPostal: this.cuadroCodigo
+      codigoPostal: this.cuadroCodigo,
+      imagenUrl: (<HTMLInputElement>document.getElementById("txtUrl")).value
     }
     this.clienteService.editarCliente(id, nuevoCliente).then(() =>{
       this.titulo = "Agregar cliente nuevo";
@@ -103,10 +141,11 @@ export class ClienteComponentComponent implements OnInit {
     })
   }
 
-  abrirModalConfirmacion(id:string | undefined, contenido:any){
+  abrirModalConfirmacion(id:string | undefined, imagenUrl:string, contenido:any){
     this.modalService.open(contenido);
     (<HTMLInputElement>document.getElementById("idCliente")).innerHTML = id!;
     this.idEliminar=id!;
+    this.urlImagenEliminar=imagenUrl;
   }
 
   cerrarModalConfirmacion(contenido:any){
@@ -114,7 +153,18 @@ export class ClienteComponentComponent implements OnInit {
     this.limpiarCampos();
   }
 
-  eliminarCliente(id: any, contenido:any){
+  eliminarImagen(urlImagen: string){
+    return this.storage.storage.refFromURL(urlImagen).delete();
+  }
+
+  eliminarCliente(id: any, urlImagen:string, contenido:any){
+    if(urlImagen!="https://firebasestorage.googleapis.com/v0/b/proyectoangularfacturacion.appspot.com/o/blank-profile-picture.png?alt=media&token=824d1416-efeb-4208-b218-77cf7dcfb872"){
+      this.eliminarImagen(urlImagen).then(() => {
+        console.log("Imagen borrada");
+      }, error => {
+        console.log(error)
+      })
+    }
     this.clienteService.eliminarCliente(id).then(() => {
       this.cerrarModalConfirmacion(contenido);
       this.limpiarCampos();
@@ -137,6 +187,13 @@ export class ClienteComponentComponent implements OnInit {
     this.idEliminar="";
     this.cuadroCodigo=0;
     this.id = undefined;
+    (<HTMLInputElement>document.getElementById("progreso")).style.width = "0";
+    (<HTMLInputElement>document.getElementById("imagen")).value ="";
+    (<HTMLInputElement>document.getElementById("txtUrl")).value ="";
+    this.urlImagen = undefined;
+    (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = false;
+    this.urlImagenEliminar="";
+    this.cuadroUrl="";
   }
   //window.location.reload();
 }

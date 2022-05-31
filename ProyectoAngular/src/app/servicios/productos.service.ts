@@ -21,7 +21,6 @@ export class ProductosService{
 
     agregarProducto(producto:Producto): Promise<any>{
         //this.productos.push(producto);
-
         return this.firestore.collection('productos').add(producto)
     }
 
@@ -43,5 +42,9 @@ export class ProductosService{
 
     editarProducto(id: string, producto: any): Promise<any>{
         return this.firestore.collection('productos').doc(id).update(producto);
+    }
+
+    buscarProducto(id: string): Observable<any>{
+        return this.firestore.collection('productos').doc(id).get();
     }
 }
