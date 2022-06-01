@@ -1,1 +1,35 @@
-<p>orden-desglose-component works!</p>
+<div class="main">
+    <div class="body" id="der">
+        <h1>Ordenes</h1>
+        <div id="der2">
+            <ul class="list-group">
+                <li class="list-group-item" name="div-orden" id="div-orden" *ngFor="let orden of ordenes">
+                    <h5>{{orden.inVoice}}</h5>
+                    <p>{{orden.fecha}} {{orden.cliente}}</p>
+                    <button type="button" class="btn btn-danger" (click)="abrirModalConfirmacion(orden.id, modal)">Eliminar</button>
+                    <button type="button" class="btn btn-warning" (click)="editarOrden(orden.id)" [routerLink]="['']">Editar</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<ng-template class="modal fade" id="modal" #modal tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-tittle" id="modalLabel"> Eliminar Orden</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cerrarModalConfirmacion(modal)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal_body">
+                ¿Esta seguro que desea eliminar la orden con el Id: <label id="idOrden"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cerrarModalConfirmacion(modal)">Cancelar</button>
+                <button type="button" class="btn btn-danger" (click)="eliminarOrden(idEliminar, modal)">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</ng-template>

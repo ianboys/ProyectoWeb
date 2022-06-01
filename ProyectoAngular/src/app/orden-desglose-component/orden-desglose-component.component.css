@@ -1,0 +1,46 @@
+*{
+    padding: 0;
+    margin: 0.5%;
+    box-sizing: border-box;
+}
+
+.main{
+    display: grid;
+    grid-template: 1fr / 1fr;
+}
+
+h1{
+    text-align: center;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+h5{
+
+    font-weight: bold;
+}
+
+#der{
+    background-color: lightgray;
+    
+}
+
+#der2{
+    display: block;
+    padding: 30px;
+    margin: 3%;
+    gap: 10px;
+}
+
+button{
+    font-size: large;
+    padding: 5px;
+    margin-bottom: 3%;
+    font-weight: bold;
+}
+
+/*CSS del Modal*/
+#idOrden{
+    color: red;
+    font-weight: bold;
+}

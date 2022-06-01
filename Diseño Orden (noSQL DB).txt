@@ -1,0 +1,40 @@
+campos de una orden
+Orden{
+	-cliente
+	-fecha
+	-productos{
+		-id
+		-nombre
+		-cantidad
+		-peso (dependiendo checkbox)
+	}
+}
+
+
+EJEMPLO
+Orden{
+	-inVoice: BD1463
+	-IdCliente: Tacos El Guero,
+	-Fecha: 30/05/2022,
+	-productos:[
+		{-idProducto: A123,
+		 -cantidad: 6,
+		 -Nombre: Carne,
+		 -peso: 0 (lb),
+		 -cantidadCaja: 40lbs,
+		 -precioUnitario: 170.00,	 
+		 -importeTotal: 1020.00
+		},
+		{-idProducto: B456,
+		 -cantidad: 1,
+		 -Nombre: Queso,
+		 -peso: 32 (lb),
+		 -cantidadCaja: "",
+		 -precioUnitario: 31.00,	 
+		 -importeTotal: 31.00
+		}
+	],
+	-total: 1051.00
+}
+
+BD1462
