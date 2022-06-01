@@ -17,10 +17,18 @@
             <div id="izq-inf">
                 <ul class="list-group">
                     <li class="list-group-item" *ngFor="let productoOrden of productosOrden">
-                        {{productoOrden.idProducto}} {{productoOrden.nombre}} {{productoOrden.cantidad}} {{productoOrden.precio}} {{productoOrden.peso}}
-                        <button>a</button>
+                        <h5>{{productoOrden.nombre}}</h5>
+                        <label for="cantidadLabel">Cantidad</label>
+                        <input type="number" name="cantidad_{{productoOrden.idProducto}}" id=cantidad_{{productoOrden.idProducto}} required #cantidad_{{productoOrden.idProducto}} placeholder="0" (change)="agregarCantidadProducto(productoOrden.idProducto, productoOrden.nombre, productoOrden.cantidad, productoOrden.precio)">
+                        <div *ngIf="productoOrden.peso==true">
+                            <label for="pesoLabel">Peso</label>
+                            <input type="number" name="peso_{{productoOrden.idProducto}}" id="peso_{{productoOrden.idProducto}}" required #peso_{{productoOrden.idProducto}} placeholder="0" (change)="agregarPesoProducto(productoOrden.idProducto, productoOrden.nombre, productoOrden.cantidad, productoOrden.precio)">Lb
+                        </div>
                     </li>
                 </ul>
+            </div>
+            <div id="izq-inf-inf">
+                <button type="input" class="btn btn-primary" id="btnHacerOrden" hidden (click)="agregarOrden()">Hacer Orden</button>
             </div>
         </div>
     </form>
@@ -30,7 +38,7 @@
         <div id="der2">
             <div *ngFor="let producto of productos" class="div-producto">
                 <img src="{{producto.imagenUrl}}" alt="{{producto.idProducto}}">
-                <input class="form-check-input" type="checkbox" id="{{producto.idProducto}}" autocomplete="off" (change)="agregarQuitarProducto(producto.id)">
+                <input class="form-check-input" type="checkbox" id="{{producto.idProducto}}" (click)="agregarQuitarProducto(producto.id)">
                 <label class="form-chack-label" id="labelProducto">Seleccionar</label>
             </div>
         </div>

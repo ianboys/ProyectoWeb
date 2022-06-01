@@ -13,18 +13,25 @@ Orden{
 
 EJEMPLO
 Orden{
-	-Cliente: Tacos El Guero,
+	-IdCliente: Tacos El Guero,
 	-Fecha: 30/05/2022,
 	-productos:[
-		{-Id: A123,
+		{-idProducto: A123,
+		 -cantidad: 6,
 		 -Nombre: Carne,
-		 -cantidad: 5,
-		 -peso: 0 (lb)
+		 -peso: 0 (lb),
+		 -cantidadCaja: 40lbs,
+		 -precioUnitario: 170.00,	 
+		 -importeTotal: 1020.00
 		},
-		{-Id: B456,
+		{-idProducto: B456,
+		 -cantidad: 1,
 		 -Nombre: Queso,
-		 -cantidad: 3,
-		 -peso: 32 (lb)
+		 -peso: 32 (lb),
+		 -cantidadCaja: "",
+		 -precioUnitario: 31.00,	 
+		 -importeTotal: 31.00
 		}
-	]
+	],
+	-total: 1051.00
 }

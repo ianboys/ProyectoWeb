@@ -37,7 +37,8 @@ export class ClienteService{
         return this.firestore.collection('clientes').doc(id).update(cliente);
     }
 
-    buscarCliente(nombre: string){
-        return this.firestore.collection('clientes').doc(nombre).valueChanges();
+    buscarCliente(nombre: string): Observable<any>{
+        return this.firestore.collection('clientes', ref => ref.where("nombre", "==", nombre)).snapshotChanges();
+        //return this.firestore.collection('clientes').doc(nombre).get();
     }
 }

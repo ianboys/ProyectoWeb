@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { OrdenComponentComponent } from './orden-component/orden-component.component';
 import { ClienteComponentComponent } from './cliente-component/cliente-component.component';
 import { ProductoComponentComponent } from './producto-component/producto-component.component';
-import { OrdenDetalleComponentComponent } from './orden-detalle-component/orden-detalle-component.component';
 import { OrdenDesgloseComponentComponent } from './orden-desglose-component/orden-desglose-component.component';
 import { RouterModule, Routes} from '@angular/router';
 import { ProductosService } from './servicios/productos.service';
@@ -27,8 +26,7 @@ const appRoutes:Routes=[
   {path:'',component:OrdenComponentComponent},
   {path:'clientes', component:ClienteComponentComponent},
   {path:'catalogo', component:ProductoComponentComponent},
-  {path:'detalleOrden', component:OrdenDetalleComponentComponent},
-  {path:'desgloseOrden', component:OrdenDesgloseComponentComponent}
+  {path:'ordenes', component:OrdenDesgloseComponentComponent}
 ];
 
 @NgModule({
@@ -37,7 +35,6 @@ const appRoutes:Routes=[
     OrdenComponentComponent,
     ClienteComponentComponent,
     ProductoComponentComponent,
-    OrdenDetalleComponentComponent,
     OrdenDesgloseComponentComponent
   ],
   imports: [

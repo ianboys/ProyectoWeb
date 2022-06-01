@@ -99,7 +99,7 @@ export class ProductoComponentComponent implements OnInit {
   agregarProducto(){
     var url:string="";
     if(this.cuadroId=="" || this.cuadroNombre=="" || this.cuadroPrecio==0){
-      alert("Favor de rellenar los campos requeridos");
+      alert("Llenar los campos requeridos");
       return;
     }
     if(this.cuadroUrl==""){

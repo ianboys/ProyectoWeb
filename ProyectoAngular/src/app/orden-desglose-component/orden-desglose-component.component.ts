@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./orden-desglose-component.component.css']
 })
 export class OrdenDesgloseComponentComponent implements OnInit {
+  titulo = "Ordenes";
 
   constructor() { }
 
