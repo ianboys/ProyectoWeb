@@ -13,6 +13,7 @@ Orden{
 
 EJEMPLO
 Orden{
+	-inVoice: BD1463
 	-IdCliente: Tacos El Guero,
 	-Fecha: 30/05/2022,
 	-productos:[
@@ -35,3 +36,5 @@ Orden{
 	],
 	-total: 1051.00
 }
+
+BD1462

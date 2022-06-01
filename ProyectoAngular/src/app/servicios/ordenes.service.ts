@@ -1,13 +1,15 @@
 import { Injectable } from "@angular/core";
 import { Orden } from "../modelos/orden.model";
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
 })
 export class OrdenesService{
     private orden$ = new Subject<any>();
+    private paramSource = new BehaviorSubject<Orden[]>([]);
+    sharedParam = this.paramSource.asObservable();
 
     constructor(private firestore: AngularFirestore){}
 
@@ -35,7 +37,11 @@ export class OrdenesService{
         return this.firestore.collection('ordenes').doc(id).update(orden);
     }
 
-    buscarOrden(fecha: string): Observable<any>{
-        return this.firestore.collection('ordenes', ref => ref.where("fecha", "==", fecha)).snapshotChanges();
+    buscarOrden(id: string | undefined): Observable<any>{
+        return this.firestore.collection('ordenes').doc(id).get();
+    }
+
+    sendParam(param: Orden[]) {
+        this.paramSource.next(param);
     }
 }

@@ -23,14 +23,18 @@ export class OrdenComponentComponent implements OnInit {
   cuadroFecha:Date= new Date("");
   idProductosOrden:string[] = []
   productosOrden:Producto[] = [];
+  cuadroPrueba:string="";
 
   productosTipoOrden:ProductoOrden[]=[];
+  ordenActualizar:Orden[] = [];
 
   constructor(private productoService:ProductosService, private clienteService:ClienteService, private ordenService:OrdenesService) { }
 
   ngOnInit(): void {
     this.obtenerProductos();
     this.obtenerClientes();
+    this.obtenerOrdenes();
+    this.obtenerOrdenActualizar();
   }
 
   obtenerProductos(){
@@ -59,18 +63,53 @@ export class OrdenComponentComponent implements OnInit {
     })
   }
 
+  obtenerOrdenes(){
+    this.ordenService.obtenerOrdenes().subscribe(doc => {
+      this.ordenes = [];
+      doc.forEach((element: any) => {
+        this.ordenes.push({
+          id: element.payload.doc.id,
+          ...element.payload.doc.data()
+        })
+      });
+      console.log(this.ordenes);
+    })
+  }
+
+  obtenerOrdenActualizar(){
+    this.ordenService.sharedParam.subscribe(param => this.ordenActualizar=param);
+    console.log("id: " + this.ordenActualizar);
+    /*if(idOrdenActualizar == "" || idOrdenActualizar == undefined){
+      return;
+    }*/
+    //this.cuadroPrueba=String(this.buscarOrden(ordenActualizar));
+    console.log(this.ordenActualizar);
+    //console.log("cliente: "+ String(this.ordenActualizar.find(element => element.cliente == "Restaurant")));
+    //this.cuadroCliente=String(this.ordenActualizar[0].cliente);
+  }
+
+  buscarOrden(id:string | undefined):Orden[]{
+    var ordenActualizar:Orden[] = [];
+    this.ordenService.buscarOrden(id).subscribe((doc:any) =>{
+      //this.ordenActualizar=[];
+      ordenActualizar.push({
+        id:doc.id,
+        inVoice: doc.data().inVoice,
+        cliente: doc.data().cliente,
+        fecha: doc.data().fecha,
+        productos: doc.data().productos,
+        granTotal: doc.data().granTotal
+      })
+    })
+    console.log(ordenActualizar);
+    //this.cuadroPrueba= ordenActualizar[0].cliente;
+    return ordenActualizar;
+  }
+
   buscarCliente(nombre:string){
     var idCliente:string ;
-
     const clienteTemp: Cliente =this.clientes.find(element => element.nombre == nombre)!;
-
     idCliente = clienteTemp.id!;
-    /*this.clienteService.buscarCliente(nombre).subscribe(doc =>{
-      doc.forEach((element: any) => {
-        idCliente=element.payload.doc.id
-      });
-    })
-    console.log("id cliente: " + idCliente + " nombre: " +nombre)*/
     console.log(idCliente);
     return idCliente;
   }
@@ -167,8 +206,8 @@ export class OrdenComponentComponent implements OnInit {
   }
 
   agregarOrden(){
-    console.log(this.productosTipoOrden);
-    console.log(this.productosOrden.find(element => element.peso == true));
+    //console.log(this.productosTipoOrden);
+    //console.log(this.productosOrden.find(element => element.peso == true));
     if(this.idProductosOrden.length != this.productosTipoOrden.length || 
       this.productosTipoOrden.findIndex(element => element.cantidad == 0) != -1){
       alert("Favor de Llenar los campos requeridos");
@@ -181,13 +220,23 @@ export class OrdenComponentComponent implements OnInit {
         return;
       }
     }
+    var numeroInVoice:number = this.ordenes.length+1;
+    numeroInVoice+=1462;
 
     var id = this.buscarCliente(this.cuadroCliente);
+    var total = 0;
+    this.productosTipoOrden.forEach(element => {
+      total += element.importeTotal;
+    });
+
     const nuevaOrden: Orden = {
-      idCliente: id,
+      inVoice: "BC"+(numeroInVoice),
+      cliente: this.cuadroCliente,
       fecha: this.cuadroFecha,
-      productos: this.productosTipoOrden
+      productos: this.productosTipoOrden,
+      granTotal: total
     }
+
     console.log(nuevaOrden);
     this.ordenService.agregarOrden(nuevaOrden).then(() => {
       alert("Orden Registrada");

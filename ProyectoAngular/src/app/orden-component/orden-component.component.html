@@ -4,8 +4,9 @@
             <div id="izq-sup">
                 <h1>{{titulo | uppercase}}</h1>
                 <div class="form-group">
+                    <input type="text" name="prueba" id="prueba" required [(ngModel)]="cuadroPrueba" #prueba="ngModel">
                     <label for="clienteLabel">Cliente*</label>
-                    <select class="form-select" name="cliente" id="cliente" placeholder="Seleccione un cliente" required [(ngModel)]="cuadroCliente" #cliente="ngModel">
+                    <select class="form-select" name="cliente" id="cliente" placeholder="Seleccione un cliente" required [(ngModel)]="cuadroCliente" #cliente="ngModel" (blur)="obtenerOrdenActualizar()">
                         <option selected>Seleccione un cliente</option>
                         <option *ngFor="let cliente of clientes" value="{{cliente.nombre}}">{{cliente.nombre}}</option>
                     </select>
