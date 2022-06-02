@@ -17,8 +17,12 @@ export class OrdenesService{
         return this.firestore.collection('ordenes').add(orden)
     }
 
-    obtenerOrdenes(): Observable<any>{
-        return this.firestore.collection('ordenes', ref => ref.orderBy('fecha', 'asc')).snapshotChanges();
+    obtenerOrdenes(acomodo:string): Observable<any>{
+        if(acomodo == ""){
+            return this.firestore.collection('ordenes', ref => ref.orderBy('inVoice', 'asc')).snapshotChanges();
+        }else{
+            return this.firestore.collection('ordenes', ref => ref.orderBy(acomodo, 'asc')).snapshotChanges();
+        }
     }
 
     eliminarOrden(id: string): Promise<any>{

@@ -51,7 +51,7 @@ export class ProductoComponentComponent implements OnInit {
   }
 
   obtenerProductos(){
-    this.productoService.obtenerProductos().subscribe(doc => {
+    this.productoService.obtenerProductos("").subscribe(doc => {
       this.productos = [];
       doc.forEach((element: any) => {
         this.productos.push({

@@ -45,7 +45,7 @@ export class OrdenComponentComponent implements OnInit {
   }
 
   obtenerProductos(){
-    this.productoService.obtenerProductos().subscribe(doc => {
+    this.productoService.obtenerProductos("").subscribe(doc => {
       this.productos = [];
       doc.forEach((element: any) => {
         this.productos.push({
@@ -71,7 +71,7 @@ export class OrdenComponentComponent implements OnInit {
   }
 
   obtenerOrdenes(){
-    this.ordenService.obtenerOrdenes().subscribe(doc => {
+    this.ordenService.obtenerOrdenes("").subscribe(doc => {
       this.ordenes = [];
       doc.forEach((element: any) => {
         this.ordenes.push({
@@ -83,6 +83,8 @@ export class OrdenComponentComponent implements OnInit {
     })
   }
 
+  //ACTUALIZAR ORDEN--------------------------------------------------------------------
+
   obtenerOrdenActualizar(){
     this.ordenService.sharedParam.subscribe(param => this.ordenActualizar=param);
     if(this.ordenActualizar!.length == 0){
@@ -90,8 +92,37 @@ export class OrdenComponentComponent implements OnInit {
       return;
     }
     this.ordenProductosActualizar = this.ordenActualizar![0].productos;
-    
+    this.colocarDatosActualizar();
   }
+
+  colocarDatosActualizar(){
+    this.cuadroCliente = this.ordenActualizar![0].cliente;
+    this.cuadroFecha = this.ordenActualizar![0].fecha;
+    
+    //Deshabilitar campos de fecha y cliente
+    (<HTMLInputElement>document.getElementById("cliente")).disabled=true;
+    (<HTMLInputElement>document.getElementById("fecha")).disabled=true;
+
+    //seleccionar productos
+    this.ordenProductosActualizar.forEach(element => {
+      const productoTemp = this.productos.find(producto => producto.idProducto == element.idProducto);
+      (<HTMLInputElement>document.getElementById(productoTemp!.id!)).checked=true;
+      this.agregarQuitarProducto(productoTemp?.id);
+    });
+    this.agregarProductos();
+
+    setTimeout(() => {
+      //agregar cantidades y pesos
+      this.ordenProductosActualizar.forEach(elemento => {
+        console.log(elemento.idProducto);
+        (<HTMLInputElement>document.getElementById("cantidad_"+elemento.idProducto)).value = String(elemento.cantidad);
+        if(elemento.peso != 0){
+          (<HTMLInputElement>document.getElementById("peso_"+elemento.idProducto)).value = String(elemento.peso);
+        }
+      })
+    }, 500);
+  }
+  //FIN ACTUALIZAR ORDEN--------------------------------------------------------------------
 
   buscarCliente(nombre:string){
     var idCliente:string ;
@@ -114,10 +145,6 @@ export class OrdenComponentComponent implements OnInit {
   }
 
   agregarProductos(){
-    this.agregarProductosNuevo();
-  }
-
-  agregarProductosNuevo(){
     if(this.cuadroCliente=="" || !(this.cuadroFecha.valueOf())){
       alert("Favor de Llenar los campos requeridos");
       return;
@@ -143,10 +170,6 @@ export class OrdenComponentComponent implements OnInit {
     });
     console.log(this.productosOrden);
     (<HTMLInputElement>document.getElementById("btnHacerOrden")).hidden=false;
-  }
-
-  agregarProductosActualizar(){
-    
   }
 
   agregarCantidadProducto(id:string, nombre:string, cantidadCaja:number, precioUnitario:number){
@@ -203,42 +226,76 @@ export class OrdenComponentComponent implements OnInit {
   }
 
   agregarOrden(){
-    //console.log(this.productosTipoOrden);
-    //console.log(this.productosOrden.find(element => element.peso == true));
-    if(this.idProductosOrden.length != this.productosTipoOrden.length || 
-      this.productosTipoOrden.findIndex(element => element.cantidad == 0) != -1){
-      alert("Favor de Llenar los campos requeridos");
-      return;
-    }else if(this.productosOrden.findIndex(element => element.peso == true) != -1){
-      const indice = this.productosOrden.findIndex(element => element.peso == true);
-
-      if(this.productosTipoOrden[indice].peso == 0){
-        alert("Favor de Llenar los campos requeridos (Peso)");
+    if(this.ordenActualizar?.length == 0){
+      //Agregar orden nueva
+      if(this.idProductosOrden.length != this.productosTipoOrden.length || 
+        this.productosTipoOrden.findIndex(element => element.cantidad == 0) != -1){
+        alert("Favor de Llenar los campos requeridos");
         return;
+      }else if(this.productosOrden.findIndex(element => element.peso == true) != -1){
+        const indice = this.productosOrden.findIndex(element => element.peso == true);
+  
+        if(this.productosTipoOrden[indice].peso == 0){
+          alert("Favor de Llenar los campos requeridos (Peso)");
+          return;
+        }
       }
+      var numeroInVoice:number = this.ordenes.length+1;
+      numeroInVoice+=1462;
+  
+      var total = 0;
+      this.productosTipoOrden.forEach(element => {
+        total += element.importeTotal;
+      });
+      const nuevaOrden: Orden = {
+        inVoice: "BC"+(numeroInVoice),
+        cliente: this.cuadroCliente,
+        fecha: this.cuadroFecha,
+        productos: this.productosTipoOrden,
+        granTotal: total
+      }
+      console.log(nuevaOrden);
+      
+      this.ordenService.agregarOrden(nuevaOrden).then(() => {
+        alert("Orden Registrada");
+        this.limpiarCampos();
+      }, error => {
+        console.log(error);
+      })
+    }else{
+      //actualizar orden existente
+      this.productosOrden.forEach(element => {
+        if((<HTMLInputElement>document.getElementById("cantidad_"+element.idProducto)).value == ""){
+          alert("Favor de llenar los campos requeridos");
+        }
+        if(element.peso == true){
+          if((<HTMLInputElement>document.getElementById("peso_"+element.idProducto)).value == ""){
+            alert("Favor de llenar los campos requeridos (Peso)");
+          }
+        }
+      });
+      var numeroInVoiceA:string = this.ordenActualizar![0].inVoice;
+  
+      var total = 0;
+      this.productosTipoOrden.forEach(element => {
+        total += element.importeTotal;
+      });
+      const nuevaOrden: Orden = {
+        inVoice: numeroInVoiceA,
+        cliente: this.cuadroCliente,
+        fecha: this.cuadroFecha,
+        productos: this.productosTipoOrden,
+        granTotal: total
+      }
+      console.log(nuevaOrden);
+      
+      this.ordenService.editarOrden(this.ordenActualizar![0].id!, nuevaOrden).then(() => {
+        alert("Orden actualizada exitosamente");
+        this.limpiarCampos();
+      }, error => {
+        console.log(error);
+      })
     }
-    var numeroInVoice:number = this.ordenes.length+1;
-    numeroInVoice+=1462;
-
-    var total = 0;
-    this.productosTipoOrden.forEach(element => {
-      total += element.importeTotal;
-    });
-    const nuevaOrden: Orden = {
-      inVoice: "BC"+(numeroInVoice),
-      cliente: this.cuadroCliente,
-      fecha: this.cuadroFecha,
-      productos: this.productosTipoOrden,
-      granTotal: total
-    }
-    console.log(nuevaOrden);
-    
-    this.ordenService.agregarOrden(nuevaOrden).then(() => {
-      alert("Orden Registrada");
-      this.limpiarCampos();
-    }, error => {
-      console.log(error);
-    })
   }
 
   limpiarCampos(){

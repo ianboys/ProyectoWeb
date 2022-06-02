@@ -42,6 +42,7 @@
         <div id="der2">
             <div *ngFor="let producto of productos" class="div-producto">
                 <img src="{{producto.imagenUrl}}" alt="{{producto.id}}">
+                <h5>{{producto.nombre}}</h5>
                 <input class="form-check-input" type="checkbox" id="{{producto.id}}" #{{producto.id}} (click)="agregarQuitarProducto(producto.id)">
                 <label class="form-chack-label" id="labelProducto">Seleccionar</label>
             </div>
