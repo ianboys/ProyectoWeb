@@ -24,9 +24,10 @@ export class OrdenComponentComponent implements OnInit {
   idProductosOrden:string[] = []
   productosOrden:Producto[] = [];
   cuadroPrueba:string="";
-
   productosTipoOrden:ProductoOrden[]=[];
-  ordenActualizar:Orden[] = [];
+
+  ordenActualizar?:Orden[];
+  ordenProductosActualizar:ProductoOrden[]=[]
 
   constructor(private productoService:ProductosService, private clienteService:ClienteService, private ordenService:OrdenesService) { }
 
@@ -34,7 +35,13 @@ export class OrdenComponentComponent implements OnInit {
     this.obtenerProductos();
     this.obtenerClientes();
     this.obtenerOrdenes();
-    this.obtenerOrdenActualizar();
+    
+    setTimeout(() => {
+      (<HTMLInputElement>document.getElementById("main-secundario")).hidden = true;
+      (<HTMLInputElement>document.getElementById("main")).hidden = false;
+      this.obtenerOrdenActualizar();
+  }, 2000);
+
   }
 
   obtenerProductos(){
@@ -78,32 +85,12 @@ export class OrdenComponentComponent implements OnInit {
 
   obtenerOrdenActualizar(){
     this.ordenService.sharedParam.subscribe(param => this.ordenActualizar=param);
-    console.log("id: " + this.ordenActualizar);
-    /*if(idOrdenActualizar == "" || idOrdenActualizar == undefined){
+    if(this.ordenActualizar!.length == 0){
+      console.log("if");
       return;
-    }*/
-    //this.cuadroPrueba=String(this.buscarOrden(ordenActualizar));
-    console.log(this.ordenActualizar);
-    //console.log("cliente: "+ String(this.ordenActualizar.find(element => element.cliente == "Restaurant")));
-    //this.cuadroCliente=String(this.ordenActualizar[0].cliente);
-  }
-
-  buscarOrden(id:string | undefined):Orden[]{
-    var ordenActualizar:Orden[] = [];
-    this.ordenService.buscarOrden(id).subscribe((doc:any) =>{
-      //this.ordenActualizar=[];
-      ordenActualizar.push({
-        id:doc.id,
-        inVoice: doc.data().inVoice,
-        cliente: doc.data().cliente,
-        fecha: doc.data().fecha,
-        productos: doc.data().productos,
-        granTotal: doc.data().granTotal
-      })
-    })
-    console.log(ordenActualizar);
-    //this.cuadroPrueba= ordenActualizar[0].cliente;
-    return ordenActualizar;
+    }
+    this.ordenProductosActualizar = this.ordenActualizar![0].productos;
+    
   }
 
   buscarCliente(nombre:string){
@@ -115,17 +102,22 @@ export class OrdenComponentComponent implements OnInit {
   }
 
   agregarQuitarProducto(id:string | undefined){
-    if(this.idProductosOrden.includes(String(id))==true){
-      this.idProductosOrden.splice(this.idProductosOrden.indexOf(String(id)))
-      console.log(id+" quitado")
+    console.log("id agregar producto: "+id);
+    if((<HTMLInputElement>document.getElementById(id!)).checked == true){
+      if(this.idProductosOrden.findIndex(element => element == id) == -1){
+        this.idProductosOrden.push(String(id));
+      }
     }else{
-      this.idProductosOrden.push(String(id));
-      console.log(id+" agregado")
+      this.idProductosOrden.splice(this.idProductosOrden.indexOf(String(id)))
     }
     console.log(this.idProductosOrden);
   }
 
   agregarProductos(){
+    this.agregarProductosNuevo();
+  }
+
+  agregarProductosNuevo(){
     if(this.cuadroCliente=="" || !(this.cuadroFecha.valueOf())){
       alert("Favor de Llenar los campos requeridos");
       return;
@@ -137,6 +129,7 @@ export class OrdenComponentComponent implements OnInit {
     this.idProductosOrden.forEach(element => {
       console.log(this.idProductosOrden);
       this.productoService.buscarProducto(element).subscribe((doc:any) =>{
+        console.log("id: " + doc.id + "idProducto: " + doc.idProducto);
         this.productosOrden.push({
           id: doc.id,
           idProducto: doc.data().idProducto,
@@ -150,6 +143,10 @@ export class OrdenComponentComponent implements OnInit {
     });
     console.log(this.productosOrden);
     (<HTMLInputElement>document.getElementById("btnHacerOrden")).hidden=false;
+  }
+
+  agregarProductosActualizar(){
+    
   }
 
   agregarCantidadProducto(id:string, nombre:string, cantidadCaja:number, precioUnitario:number){
@@ -223,12 +220,10 @@ export class OrdenComponentComponent implements OnInit {
     var numeroInVoice:number = this.ordenes.length+1;
     numeroInVoice+=1462;
 
-    var id = this.buscarCliente(this.cuadroCliente);
     var total = 0;
     this.productosTipoOrden.forEach(element => {
       total += element.importeTotal;
     });
-
     const nuevaOrden: Orden = {
       inVoice: "BC"+(numeroInVoice),
       cliente: this.cuadroCliente,
@@ -236,13 +231,13 @@ export class OrdenComponentComponent implements OnInit {
       productos: this.productosTipoOrden,
       granTotal: total
     }
-
     console.log(nuevaOrden);
+    
     this.ordenService.agregarOrden(nuevaOrden).then(() => {
       alert("Orden Registrada");
       this.limpiarCampos();
     }, error => {
-      console.log(error)
+      console.log(error);
     })
   }
 

@@ -8,7 +8,7 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 })
 export class OrdenesService{
     private orden$ = new Subject<any>();
-    private paramSource = new BehaviorSubject<Orden[]>([]);
+    private paramSource = new BehaviorSubject<Orden[] | undefined>([]);
     sharedParam = this.paramSource.asObservable();
 
     constructor(private firestore: AngularFirestore){}
@@ -41,7 +41,7 @@ export class OrdenesService{
         return this.firestore.collection('ordenes').doc(id).get();
     }
 
-    sendParam(param: Orden[]) {
+    sendParam(param: Orden[] | undefined) {
         this.paramSource.next(param);
     }
 }

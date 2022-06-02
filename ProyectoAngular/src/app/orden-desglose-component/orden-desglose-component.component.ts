@@ -37,8 +37,11 @@ export class OrdenDesgloseComponentComponent implements OnInit {
   }
 
   editarOrden(id: string | undefined){
-    const indexTemp = this.ordenes.findIndex(element => element.id == id)
-    this.ordenService.sendParam(this.ordenes.slice(indexTemp,indexTemp));
+    console.log(this.ordenes.find(element => element.id == id));
+    var ordenTemp:Orden[] = [];
+    ordenTemp.push(this.ordenes.find(element => element.id == id)!);
+    console.log(ordenTemp);
+    this.ordenService.sendParam(ordenTemp);
   }
 
   abrirModalConfirmacion(id:string | undefined, contenido:any){
