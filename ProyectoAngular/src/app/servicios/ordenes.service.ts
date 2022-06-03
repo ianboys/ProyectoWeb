@@ -2,6 +2,9 @@ import { Injectable } from "@angular/core";
 import { Orden } from "../modelos/orden.model";
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, Observable, Subject } from "rxjs";
+import * as pdfMake from 'pdfmake/build/pdfMake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Injectable({
     providedIn: 'root'
@@ -48,4 +51,37 @@ export class OrdenesService{
     sendParam(param: Orden[] | undefined) {
         this.paramSource.next(param);
     }
+
+    createPDF(param: Orden[]) {
+        let pdfDefinition = {
+          pageSize : 'A4',
+          content: [
+            {
+              columns:[
+                {text: 'Date', style: 'header', alignment: 'justify', margin: [200, 0, 0, 0]},
+                {text: 'Invoice', style: 'header', alignment: 'justify', margin: [100, 0, 0, 0]},
+                {text: 'P.O No', style: 'header', alignment: 'justify', margin: [10, 0, 0, 0]},
+              ]
+            },
+            {
+                columns:[
+                  {text: param[0].fecha, style: 'header', alignment: 'justify', margin: [190, 0, 0, 0]},
+                  {text: param[0].inVoice, style: 'header', alignment: 'justify', margin: [70, 0, 0, 0]}
+                ]
+              },
+            {
+              style: 'tableExample',
+              alignment: 'center',
+              table: {
+                widths: [80,80,80,80,80,80],
+                body: [
+                  ['Item', 'Quantity', 'Description','Case','Rate','Amount'],
+                  [param[0].productos[0].idProducto, param[0].productos[0].cantidad, param[0].productos[0].nombre,param[0].productos[0].cantidadCaja,param[0].productos[0].precioUnitario,param[0].productos[0].importeTotal]
+                ]
+              }
+            }
+          ]
+        };
+        pdfMake.createPdf(pdfDefinition).open();
+      }
 }

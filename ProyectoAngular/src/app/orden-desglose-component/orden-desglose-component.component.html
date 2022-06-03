@@ -14,6 +14,7 @@
                     <p>Fecha: {{orden.fecha}} Cliente: {{orden.cliente}}</p>
                     <button type="button" class="btn btn-danger" (click)="abrirModalConfirmacion(orden.id, modal)">Eliminar</button>
                     <button type="button" class="btn btn-warning" (click)="editarOrden(orden.id)" [routerLink]="['']">Editar</button>
+                    <button type="button" class="btn btn-info" (click)="createInvoice(orden.id)" >Crear Invoice</button>
                 </li>
             </ul>
         </div>

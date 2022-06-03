@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Orden } from '../modelos/orden.model';
+import { OrdenComponentComponent } from '../orden-component/orden-component.component';
 import { OrdenesService } from '../servicios/ordenes.service';
 
 @Component({
@@ -77,5 +78,16 @@ export class OrdenDesgloseComponentComponent implements OnInit {
     this.idEliminar="";
     this.id = undefined;
   }
+
+  createInvoice(id: any){
+    this.ordenService.createPDF(this.getOrden(id));
+  }
+
+  getOrden(id: any){
+    var ordenTemp:Orden[] = [];
+    ordenTemp.push(this.ordenes.find(element => element.id == id)!);
+    return ordenTemp;
+  }
+
   //window.location.reload();
 }
