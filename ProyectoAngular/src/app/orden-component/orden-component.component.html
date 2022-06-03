@@ -1,12 +1,15 @@
-<div class="main">
+<div class="main" id="main-secundario">
+    <h1 style="text-align: right;">Cargando...</h1>
+</div>
+
+<div class="main" id="main" hidden>
     <form ngNativeValidate >
         <div class="body" id="izq">
             <div id="izq-sup">
                 <h1>{{titulo | uppercase}}</h1>
                 <div class="form-group">
-                    <input type="text" name="prueba" id="prueba" required [(ngModel)]="cuadroPrueba" #prueba="ngModel">
                     <label for="clienteLabel">Cliente*</label>
-                    <select class="form-select" name="cliente" id="cliente" placeholder="Seleccione un cliente" required [(ngModel)]="cuadroCliente" #cliente="ngModel" (blur)="obtenerOrdenActualizar()">
+                    <select class="form-select" name="cliente" id="cliente" placeholder="Seleccione un cliente" required [(ngModel)]="cuadroCliente" #cliente="ngModel">
                         <option selected>Seleccione un cliente</option>
                         <option *ngFor="let cliente of clientes" value="{{cliente.nombre}}">{{cliente.nombre}}</option>
                     </select>
@@ -20,7 +23,7 @@
                     <li class="list-group-item" *ngFor="let productoOrden of productosOrden">
                         <h5>{{productoOrden.nombre}}</h5>
                         <label for="cantidadLabel">Cantidad</label>
-                        <input type="number" name="cantidad_{{productoOrden.idProducto}}" id=cantidad_{{productoOrden.idProducto}} required #cantidad_{{productoOrden.idProducto}} placeholder="0" (change)="agregarCantidadProducto(productoOrden.idProducto, productoOrden.nombre, productoOrden.cantidad, productoOrden.precio)">
+                        <input type="number" name="cantidad_{{productoOrden.idProducto}}" id="cantidad_{{productoOrden.idProducto}}" required #cantidad_{{productoOrden.idProducto}} placeholder="0" (change)="agregarCantidadProducto(productoOrden.idProducto, productoOrden.nombre, productoOrden.cantidad, productoOrden.precio)">
                         <div *ngIf="productoOrden.peso==true">
                             <label for="pesoLabel">Peso</label>
                             <input type="number" name="peso_{{productoOrden.idProducto}}" id="peso_{{productoOrden.idProducto}}" required #peso_{{productoOrden.idProducto}} placeholder="0" (change)="agregarPesoProducto(productoOrden.idProducto, productoOrden.nombre, productoOrden.cantidad, productoOrden.precio)">Lb
@@ -38,8 +41,9 @@
         <h1>Productos</h1>
         <div id="der2">
             <div *ngFor="let producto of productos" class="div-producto">
-                <img src="{{producto.imagenUrl}}" alt="{{producto.idProducto}}">
-                <input class="form-check-input" type="checkbox" id="{{producto.idProducto}}" (click)="agregarQuitarProducto(producto.id)">
+                <img src="{{producto.imagenUrl}}" alt="{{producto.id}}">
+                <h5>{{producto.nombre}}</h5>
+                <input class="form-check-input" type="checkbox" id="{{producto.id}}" #{{producto.id}} (click)="agregarQuitarProducto(producto.id)">
                 <label class="form-chack-label" id="labelProducto">Seleccionar</label>
             </div>
         </div>

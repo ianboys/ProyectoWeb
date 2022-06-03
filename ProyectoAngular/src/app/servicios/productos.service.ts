@@ -24,8 +24,12 @@ export class ProductosService{
         return this.firestore.collection('productos').add(producto)
     }
 
-    obtenerProductos(): Observable<any>{
-        return this.firestore.collection('productos', ref => ref.orderBy('nombre', 'asc')).snapshotChanges();
+    obtenerProductos(orden:string): Observable<any>{
+        if(orden == ""){
+            return this.firestore.collection('productos', ref => ref.orderBy('nombre', 'asc')).snapshotChanges();
+        }else{
+            return this.firestore.collection('productos', ref => ref.orderBy(orden, 'asc')).snapshotChanges();
+        }
     }
 
     eliminarProducto(id: string): Promise<any>{

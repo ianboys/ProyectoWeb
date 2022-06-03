@@ -8,7 +8,7 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 })
 export class OrdenesService{
     private orden$ = new Subject<any>();
-    private paramSource = new BehaviorSubject<Orden[]>([]);
+    private paramSource = new BehaviorSubject<Orden[] | undefined>([]);
     sharedParam = this.paramSource.asObservable();
 
     constructor(private firestore: AngularFirestore){}
@@ -17,8 +17,12 @@ export class OrdenesService{
         return this.firestore.collection('ordenes').add(orden)
     }
 
-    obtenerOrdenes(): Observable<any>{
-        return this.firestore.collection('ordenes', ref => ref.orderBy('fecha', 'asc')).snapshotChanges();
+    obtenerOrdenes(acomodo:string): Observable<any>{
+        if(acomodo == ""){
+            return this.firestore.collection('ordenes', ref => ref.orderBy('inVoice', 'asc')).snapshotChanges();
+        }else{
+            return this.firestore.collection('ordenes', ref => ref.orderBy(acomodo, 'asc')).snapshotChanges();
+        }
     }
 
     eliminarOrden(id: string): Promise<any>{
@@ -41,7 +45,7 @@ export class OrdenesService{
         return this.firestore.collection('ordenes').doc(id).get();
     }
 
-    sendParam(param: Orden[]) {
+    sendParam(param: Orden[] | undefined) {
         this.paramSource.next(param);
     }
 }

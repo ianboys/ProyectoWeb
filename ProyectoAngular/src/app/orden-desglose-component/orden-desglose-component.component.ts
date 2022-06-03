@@ -11,11 +11,13 @@ import { OrdenesService } from '../servicios/ordenes.service';
 })
 export class OrdenDesgloseComponentComponent implements OnInit {
   ordenes:Orden[]=[];
+  cuadroAcomodo:string = "";
 
   titulo = "ORDENES";
   id?: string;
 
   idEliminar:string="";
+  acomodo:string="";
 
   constructor(private ordenService:OrdenesService, private storage: AngularFireStorage, private modalService: NgbModal) { }
 
@@ -24,7 +26,7 @@ export class OrdenDesgloseComponentComponent implements OnInit {
   }
 
   obtenerOrdenes(){
-    this.ordenService.obtenerOrdenes().subscribe(doc => {
+    this.ordenService.obtenerOrdenes(this.acomodo).subscribe(doc => {
       this.ordenes = [];
       doc.forEach((element: any) => {
         this.ordenes.push({
@@ -36,9 +38,17 @@ export class OrdenDesgloseComponentComponent implements OnInit {
     })
   }
 
+  obtenerAcomodo(){
+    this.acomodo = this.cuadroAcomodo
+    this.obtenerOrdenes();
+  }
+
   editarOrden(id: string | undefined){
-    const indexTemp = this.ordenes.findIndex(element => element.id == id)
-    this.ordenService.sendParam(this.ordenes.slice(indexTemp,indexTemp));
+    console.log(this.ordenes.find(element => element.id == id));
+    var ordenTemp:Orden[] = [];
+    ordenTemp.push(this.ordenes.find(element => element.id == id)!);
+    console.log(ordenTemp);
+    this.ordenService.sendParam(ordenTemp);
   }
 
   abrirModalConfirmacion(id:string | undefined, contenido:any){
