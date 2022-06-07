@@ -23,11 +23,11 @@
                     <li class="list-group-item" *ngFor="let productoOrden of productosOrden">
                         <h5>{{productoOrden.nombre}}</h5>
                         <label for="cantidadLabel">Cantidad</label>
-                        <input type="number" name="cantidad_{{productoOrden.idProducto}}" id="cantidad_{{productoOrden.idProducto}}" required #cantidad_{{productoOrden.idProducto}} placeholder="0" (change)="agregarCantidadProducto(productoOrden.idProducto, productoOrden.nombre, productoOrden.cantidad, productoOrden.precio, productoOrden.peso)">
+                        <input type="number" min="0" name="cantidad_{{productoOrden.idProducto}}" id="cantidad_{{productoOrden.idProducto}}" required #cantidad_{{productoOrden.idProducto}} placeholder="0" (change)="agregarCantidadProducto(productoOrden.idProducto, productoOrden.nombre, productoOrden.cantidad, productoOrden.precio, productoOrden.peso)">
                         <div *ngIf="productoOrden.peso==true">
                             <div *ngFor="let peso of pesos2">
                                 <label for="pesoLabel">Peso</label>
-                                <input type="number" name="peso_{{productoOrden.idProducto}}_{{peso}}" id="peso_{{productoOrden.idProducto}}_{{peso}}" required #peso_{{productoOrden.idProducto}}_{{peso}} placeholder="0" (change)="agregarPesoProducto(productoOrden.idProducto, productoOrden.nombre, productoOrden.cantidad, productoOrden.precio, peso)">Lb
+                                <input type="number" step="0.01" min="0" name="peso_{{productoOrden.idProducto}}_{{peso}}" id="peso_{{productoOrden.idProducto}}_{{peso}}" required #peso_{{productoOrden.idProducto}}_{{peso}} placeholder="0" (change)="agregarPesoProducto(productoOrden.idProducto, productoOrden.nombre, productoOrden.cantidad, productoOrden.precio, peso)">Lb
                             </div>
                         </div>
                     </li>

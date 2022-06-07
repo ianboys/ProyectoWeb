@@ -270,8 +270,11 @@ export class OrdenComponentComponent implements OnInit {
         }else{
           var pesoTotal = 0;
           this.pesosTemp.forEach(element => {
-            pesoTotal += element;
+            pesoTotal = +element;
+            console.log('peso: '+pesoTotal)
           });
+
+          console.log(pesoTotal);
 
           const nuevoProductoTipoOrden:ProductoOrden = {
             idProducto: id,

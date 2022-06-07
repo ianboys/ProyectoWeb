@@ -100,6 +100,7 @@ export class OrdenDesgloseComponentComponent implements OnInit {
 
   createInvoice(id: any,nombre: any){
     this.ordenService.createPDF(this.getOrden(id),this.getPosClientes(nombre));
+    console.log(this.getOrden(id));
   }
 
   getOrden(id: any){

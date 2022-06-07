@@ -20009,8 +20009,8 @@
                     [style.width]="(uploadPercent | async) + '%'">
                 </div>
             </div>
-            <input type="text" [value]="urlImagen | async" name="txtUrl" id="txtUrl" hidden>
-            <input  type="submit" class="btn btn-primary" id="btnAgregar" value="Agregar Cliente" (click)="guardarCliente()">
+            <input type="text" [value]="urlImagen | async" name="txtUrl" id="txtUrl" >
+            <input  type="submit" class="btn btn-primary" id="btnAgregar" value="Agregar Cliente" (click)="guardarCliente()" hidden>
         </div>
     </form>
 

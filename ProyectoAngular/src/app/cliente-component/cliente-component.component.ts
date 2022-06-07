@@ -86,6 +86,7 @@ export class ClienteComponentComponent implements OnInit {
     const task = this.storage.upload(filePath, file);
     console.log(file?.name);
 
+    (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = true;
     this.uploadPercent = task.percentageChanges()
     task.snapshotChanges().pipe(finalize(() => {
       this.urlImagen = ref.getDownloadURL(),
