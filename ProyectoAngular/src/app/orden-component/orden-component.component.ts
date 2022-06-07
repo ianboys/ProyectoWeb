@@ -29,6 +29,11 @@ export class OrdenComponentComponent implements OnInit {
   ordenActualizar?:Orden[];
   ordenProductosActualizar:ProductoOrden[]=[]
 
+  pesos:number[];
+  pesos2:number[];
+  banderaPesos:boolean = false;
+  pesosTemp:number[] = [];
+
   constructor(private productoService:ProductosService, private clienteService:ClienteService, private ordenService:OrdenesService) { }
 
   ngOnInit(): void {
@@ -172,12 +177,23 @@ export class OrdenComponentComponent implements OnInit {
     (<HTMLInputElement>document.getElementById("btnHacerOrden")).hidden=false;
   }
 
-  agregarCantidadProducto(id:string, nombre:string, cantidadCaja:number, precioUnitario:number){
+  agregarCantidadProducto(id:string, nombre:string, cantidadCaja:number, precioUnitario:number, peso:boolean){
     console.log("cantidad: " + "cantidad_"+id);
 
     const cantidad = parseInt((<HTMLInputElement>document.getElementById("cantidad_"+id)).value)
     const precio = precioUnitario; 
     const indice = this.productosTipoOrden.findIndex(element => element.idProducto == id);
+
+    if(peso==true){
+      this.pesos = [];
+      this.pesos2 = [];
+      for (let i = 0; i < cantidad; i++) {
+        this.pesos.push(i);
+        this.pesos2.push(i);
+      }
+      this.banderaPesos=true;
+      console.log("pesos: " + this.pesos);
+    }
 
     if(indice != -1 && this.productosTipoOrden[indice].cantidad == 0){
       this.productosTipoOrden[indice].cantidad = cantidad;
@@ -199,36 +215,86 @@ export class OrdenComponentComponent implements OnInit {
     }
   }
 
-  agregarPesoProducto(id:string, nombre:string, cantidadCaja:number, precioUnitario:number){
-    const peso = parseInt((<HTMLInputElement>document.getElementById("peso_"+id)).value)
-    const indice = this.productosTipoOrden.findIndex(element => element.idProducto == id);
-
-    console.log("peso: " + peso);
-
-    if(indice != -1 && this.productosTipoOrden[indice].peso == 0){
-      this.productosTipoOrden[indice].peso = peso;
-
-    }else if(indice != -1 && this.productosTipoOrden[indice].peso != 0){
-      this.productosTipoOrden.splice(indice);
-      
-    }else{
-      const nuevoProductoTipoOrden:ProductoOrden = {
-        idProducto: id,
-        cantidad: 0,
-        nombre: nombre,
-        peso: peso,
-        cantidadCaja: cantidadCaja,
-        precioUnitario: precioUnitario,
-        importeTotal: 0
+  agregarPesoProducto(id:string, nombre:string, cantidadCaja:number, precioUnitario:number, pesoId:number){
+    if(this.banderaPesos==false){
+      console.log("no hay pesos");
+      //no tiene pesos agregar orden normal
+      const peso = parseInt((<HTMLInputElement>document.getElementById("peso_"+pesoId)).value)
+      const indice = this.productosTipoOrden.findIndex(element => element.idProducto == id);
+  
+      console.log("peso: " + peso);
+  
+      if(indice != -1 && this.productosTipoOrden[indice].peso == 0){
+        this.productosTipoOrden[indice].peso = peso;
+  
+      }else if(indice != -1 && this.productosTipoOrden[indice].peso != 0){
+        this.productosTipoOrden.splice(indice);
+        
+      }else{
+        const nuevoProductoTipoOrden:ProductoOrden = {
+          idProducto: id,
+          cantidad: 0,
+          nombre: nombre,
+          peso: peso,
+          cantidadCaja: cantidadCaja,
+          precioUnitario: precioUnitario,
+          importeTotal: 0
+        }
+        this.productosTipoOrden.push(nuevoProductoTipoOrden);
       }
-      this.productosTipoOrden.push(nuevoProductoTipoOrden);
+    }else{
+      console.log("si hay pesos");
+      console.log("peso_"+id+"_"+pesoId);
+      //agregar pesos a la orden
+      if(this.pesos.length > 1){
+        console.log("longitud pesos:"+this.pesos.length);
+        this.pesosTemp.push(parseInt((<HTMLInputElement>document.getElementById("peso_"+id+"_"+pesoId)).value));
+        console.log("pesosTemp: "+this.pesosTemp);
+        this.pesos.splice(this.pesos.length-1);
+        console.log("longitud pesos:"+this.pesos.length);
+      }else{
+        this.pesosTemp.push(parseInt((<HTMLInputElement>document.getElementById("peso_"+id+"_"+pesoId)).value));
+        console.log("ultimo pesosTemp: "+this.pesosTemp);
+        this.pesos.pop;
+
+        const indice = this.productosTipoOrden.findIndex(element => element.idProducto == id);
+    
+        console.log("peso: " + this.pesosTemp);
+    
+        if(indice != -1 && this.productosTipoOrden[indice].pesos == undefined){
+          this.productosTipoOrden[indice].pesos = this.pesosTemp;
+    
+        }else if(indice != -1 && this.productosTipoOrden[indice].pesos !=undefined){
+          this.productosTipoOrden.splice(indice);
+          
+        }else{
+          var pesoTotal = 0;
+          this.pesosTemp.forEach(element => {
+            pesoTotal += element;
+          });
+
+          const nuevoProductoTipoOrden:ProductoOrden = {
+            idProducto: id,
+            cantidad: 0,
+            nombre: nombre,
+            peso: pesoTotal,
+            cantidadCaja: cantidadCaja,
+            precioUnitario: precioUnitario,
+            importeTotal: 0,
+            pesos:this.pesosTemp
+          }
+          this.productosTipoOrden.push(nuevoProductoTipoOrden);
+          console.log("productos:"+ this.productosTipoOrden);
+        }
+      }
+
     }
   }
 
   agregarOrden(){
     if(this.ordenActualizar?.length == 0){
       //Agregar orden nueva
-      if(this.idProductosOrden.length != this.productosTipoOrden.length || 
+      /*if(this.idProductosOrden.length != this.productosTipoOrden.length || 
         this.productosTipoOrden.findIndex(element => element.cantidad == 0) != -1){
         alert("Favor de Llenar los campos requeridos");
         return;
@@ -239,7 +305,7 @@ export class OrdenComponentComponent implements OnInit {
           alert("Favor de Llenar los campos requeridos (Peso)");
           return;
         }
-      }
+      }*/
       var numeroInVoice:number = this.ordenes.length+1;
       numeroInVoice+=1462;
   
@@ -303,7 +369,7 @@ export class OrdenComponentComponent implements OnInit {
     this.cuadroFecha=new Date("");
     this.productosOrden=[];
     this.productosOrden=[];
-    window.location.reload();
+    //window.location.reload();
   }
 
 }

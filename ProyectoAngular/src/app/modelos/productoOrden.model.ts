@@ -9,6 +9,7 @@ export class ProductoOrden{
     cantidadCaja:number = 0;
     precioUnitario:number = 0;
     importeTotal:number = 0;
+    pesos?:number[];
 
     constructor(idProducto:string, cantidad:number, nombre:string, peso:number, 
                 cantidadCaja:number, precioUnitario:number, importeTotal:number){
