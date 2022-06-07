@@ -248,7 +248,7 @@ export class OrdenComponentComponent implements OnInit {
         total += element.importeTotal;
       });
       const nuevaOrden: Orden = {
-        inVoice: "BC"+(numeroInVoice),
+        inVoice: "BS"+(numeroInVoice),
         cliente: this.cuadroCliente,
         fecha: this.cuadroFecha,
         productos: this.productosTipoOrden,
