@@ -45,7 +45,7 @@ button, #btnAgregar{
     width: 150px;
     height: 150px;
     object-fit: fill;
-    margin-bottom: 100px;
+    margin-bottom: 60%;
 
     /*background-color: orange;*/
 }

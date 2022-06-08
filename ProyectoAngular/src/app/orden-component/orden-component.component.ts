@@ -27,10 +27,11 @@ export class OrdenComponentComponent implements OnInit {
   productosTipoOrden:ProductoOrden[]=[];
 
   ordenActualizar?:Orden[];
-  ordenProductosActualizar:ProductoOrden[]=[]
+  ordenProductosActualizar:ProductoOrden[]=[];
+  pesosActualizar:number[];
 
-  pesos:number[];
-  pesos2:number[];
+  pesos:number[] =[];
+  pesos2:number[] =[];
   banderaPesos:boolean = false;
   pesosTemp:number[] = [];
 
@@ -97,6 +98,11 @@ export class OrdenComponentComponent implements OnInit {
       return;
     }
     this.ordenProductosActualizar = this.ordenActualizar![0].productos;
+    //this.productosTipoOrden = this.ordenProductosActualizar;
+    if(this.ordenProductosActualizar.find(producto => producto.pesos != undefined) != undefined){
+      const indice = this.ordenProductosActualizar.findIndex(producto => producto.pesos != undefined);
+      this.pesosActualizar = this.ordenProductosActualizar[indice].pesos;
+    }
     this.colocarDatosActualizar();
   }
 
@@ -122,7 +128,18 @@ export class OrdenComponentComponent implements OnInit {
         console.log(elemento.idProducto);
         (<HTMLInputElement>document.getElementById("cantidad_"+elemento.idProducto)).value = String(elemento.cantidad);
         if(elemento.peso != 0){
-          (<HTMLInputElement>document.getElementById("peso_"+elemento.idProducto)).value = String(elemento.peso);
+          this.banderaPesos=true;
+          this.pesosActualizar.forEach((element, index) => {
+            this.pesos2.push(index+1);
+            this.pesos.push(index+1);
+            console.log("pesos2: "+this.pesos2);
+          });
+          setTimeout(() => {
+            this.pesosActualizar.forEach((element, index2) => {
+              console.log("peso_"+elemento.idProducto+"_"+(index2+1));
+              (<HTMLInputElement>document.getElementById("peso_"+elemento.idProducto+"_"+(index2+1))).value = String(element);
+            });
+          },300);
         }
       })
     }, 500);
@@ -309,7 +326,7 @@ export class OrdenComponentComponent implements OnInit {
           return;
         }
       }*/
-      var numeroInVoice:number = this.ordenes.length+1;
+      var numeroInVoice:number = this.ordenes.length+2;
       numeroInVoice+=1462;
   
       var total = 0;
@@ -338,9 +355,11 @@ export class OrdenComponentComponent implements OnInit {
           alert("Favor de llenar los campos requeridos");
         }
         if(element.peso == true){
-          if((<HTMLInputElement>document.getElementById("peso_"+element.idProducto)).value == ""){
-            alert("Favor de llenar los campos requeridos (Peso)");
-          }
+          this.pesos.forEach(elemento => {
+            if((<HTMLInputElement>document.getElementById("peso_"+element.idProducto+"_"+elemento)).value == ""){
+              alert("Favor de llenar los campos requeridos (Peso)");
+            }
+          });
         }
       });
       var numeroInVoiceA:string = this.ordenActualizar![0].inVoice;
@@ -372,7 +391,7 @@ export class OrdenComponentComponent implements OnInit {
     this.cuadroFecha=new Date("");
     this.productosOrden=[];
     this.productosOrden=[];
-    //window.location.reload();
+    window.location.reload();
   }
 
 }
