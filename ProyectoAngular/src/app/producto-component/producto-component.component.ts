@@ -74,8 +74,8 @@ export class ProductoComponentComponent implements OnInit {
   }
 
   agregarImagenProducto(event: Event){
-    if(this.cuadroUrl!="" && this.cuadroUrl!="https://firebasestorage.googleapis.com/v0/b/proyectoangularfacturacion.appspot.com/o/Producto%20por%20defecto.png?alt=media&token=73984618-84b8-4f61-9077-c73a14234838"){
-      this.eliminarImagen(this.cuadroUrl);
+    if((<HTMLInputElement>document.getElementById("txtUrl")).value !="" && (<HTMLInputElement>document.getElementById("txtUrl")).value !="https://firebasestorage.googleapis.com/v0/b/proyectoangularfacturacion.appspot.com/o/Producto%20por%20defecto.png?alt=media&token=73984618-84b8-4f61-9077-c73a14234838"){
+      this.eliminarImagen((<HTMLInputElement>document.getElementById("txtUrl")).value);
     }
     
     (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = true;
@@ -102,10 +102,11 @@ export class ProductoComponentComponent implements OnInit {
       alert("Llenar los campos requeridos");
       return;
     }
-    if(this.cuadroUrl==""){
+    if((<HTMLInputElement>document.getElementById("txtUrl")).value == ""){
+      console.log("cuadro: "+this.cuadroUrl);
       url="https://firebasestorage.googleapis.com/v0/b/proyectoangularfacturacion.appspot.com/o/Producto%20por%20defecto.png?alt=media&token=73984618-84b8-4f61-9077-c73a14234838";
     }else{
-      url=this.cuadroUrl;
+      url=(<HTMLInputElement>document.getElementById("txtUrl")).value;
     }
     const nuevoProducto: Producto = {
       idProducto: this.cuadroId,

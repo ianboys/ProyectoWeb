@@ -73,8 +73,8 @@ export class ClienteComponentComponent implements OnInit {
   }
 
   agregarImagenCliente(event: Event){
-    if(this.cuadroUrl!="" && this.cuadroUrl!="https://firebasestorage.googleapis.com/v0/b/proyectoangularfacturacion.appspot.com/o/blank-profile-picture.png?alt=media&token=824d1416-efeb-4208-b218-77cf7dcfb872"){
-      this.eliminarImagen(this.cuadroUrl);
+    if((<HTMLInputElement>document.getElementById("txtUrl")).value !="" && (<HTMLInputElement>document.getElementById("txtUrl")).value !="https://firebasestorage.googleapis.com/v0/b/proyectoangularfacturacion.appspot.com/o/Producto%20por%20defecto.png?alt=media&token=73984618-84b8-4f61-9077-c73a14234838"){
+      this.eliminarImagen((<HTMLInputElement>document.getElementById("txtUrl")).value);
     }
     
     (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = true;
@@ -86,7 +86,6 @@ export class ClienteComponentComponent implements OnInit {
     const task = this.storage.upload(filePath, file);
     console.log(file?.name);
 
-    (<HTMLInputElement>document.getElementById("btnAgregar")).disabled = true;
     this.uploadPercent = task.percentageChanges()
     task.snapshotChanges().pipe(finalize(() => {
       this.urlImagen = ref.getDownloadURL(),
@@ -102,10 +101,10 @@ export class ClienteComponentComponent implements OnInit {
       alert("Favor de rellenar los campos requeridos");
       return;
     }
-    if(this.cuadroUrl==""){
+    if((<HTMLInputElement>document.getElementById("txtUrl")).value == ""){
       url="https://firebasestorage.googleapis.com/v0/b/proyectoangularfacturacion.appspot.com/o/blank-profile-picture.png?alt=media&token=824d1416-efeb-4208-b218-77cf7dcfb872";
     }else{
-      url=this.cuadroUrl;
+      url=(<HTMLInputElement>document.getElementById("txtUrl")).value;
     }
     const nuevoCliente: Cliente = {
       nombre: this.cuadroNombre,

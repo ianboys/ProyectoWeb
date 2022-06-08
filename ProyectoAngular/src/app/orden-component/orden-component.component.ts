@@ -247,35 +247,35 @@ export class OrdenComponentComponent implements OnInit {
       console.log("peso_"+id+"_"+pesoId);
       //agregar pesos a la orden
       if(this.pesos.length > 1){
-        console.log("longitud pesos:"+this.pesos.length);
         this.pesosTemp.push(parseInt((<HTMLInputElement>document.getElementById("peso_"+id+"_"+pesoId)).value));
         console.log("pesosTemp: "+this.pesosTemp);
         this.pesos.splice(this.pesos.length-1);
-        console.log("longitud pesos:"+this.pesos.length);
       }else{
         this.pesosTemp.push(parseInt((<HTMLInputElement>document.getElementById("peso_"+id+"_"+pesoId)).value));
         console.log("ultimo pesosTemp: "+this.pesosTemp);
-        this.pesos.pop;
+        this.pesos.splice(this.pesos.length-1);
+    
+        console.log("pesos: " + this.pesosTemp);
+        var pesoTotal = 0;
+        this.pesosTemp.forEach(element => {
+          pesoTotal = pesoTotal + element;
+          console.log('pesoTotal: '+element);
+        });
 
+        console.log(pesoTotal);
         const indice = this.productosTipoOrden.findIndex(element => element.idProducto == id);
-    
-        console.log("peso: " + this.pesosTemp);
-    
-        if(indice != -1 && this.productosTipoOrden[indice].pesos == undefined){
+
+        if(indice != -1 && this.productosTipoOrden[indice].peso == 0 && this.productosTipoOrden[indice].pesos == undefined){
+          console.log("if 1");
+          this.productosTipoOrden[indice].peso = pesoTotal;
           this.productosTipoOrden[indice].pesos = this.pesosTemp;
     
-        }else if(indice != -1 && this.productosTipoOrden[indice].pesos !=undefined){
+        }else if(indice != -1 && this.productosTipoOrden[indice].peso != 0 && this.productosTipoOrden[indice].pesos != undefined){
+          console.log("if 2");
           this.productosTipoOrden.splice(indice);
           
         }else{
-          var pesoTotal = 0;
-          this.pesosTemp.forEach(element => {
-            pesoTotal = +element;
-            console.log('peso: '+pesoTotal)
-          });
-
-          console.log(pesoTotal);
-
+          console.log("if 3");
           const nuevoProductoTipoOrden:ProductoOrden = {
             idProducto: id,
             cantidad: 0,
